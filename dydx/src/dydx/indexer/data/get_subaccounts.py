@@ -1,34 +1,9 @@
-from typing_extensions import Literal, overload, NotRequired
+from typing_extensions import Literal, overload
 from dataclasses import dataclass
 
 from dydx.core import TypedDict
-from dydx.core.types import PositionSide
+from dydx.core.types import PerpetualPosition, AssetPosition
 from .core import IndexerMixin, response_parser, Response
-
-class PerpetualPosition(TypedDict):
-  market: str
-  status: str
-  side: PositionSide
-  size: str
-  maxSize: str
-  entryPrice: str
-  exitPrice: NotRequired[str|None]
-  realizedPnl: str
-  unrealizedPnl: str
-  createdAt: str
-  createdAtHeight: str
-  closedAt: NotRequired[str|None]
-  sumOpen: str
-  sumClose: str
-  netFunding: str
-  subaccountNumber: int
-
-class AssetPosition(TypedDict):
-  size: str
-  symbol: str
-  side: PositionSide
-  assetId: str
-  subaccountNumber: int
 
 class Subaccount(TypedDict):
   address: str

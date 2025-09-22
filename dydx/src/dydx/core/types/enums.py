@@ -39,3 +39,14 @@ OrderType = Literal[
 """
 
 TimeInForce = Literal['GTT', 'IOC', 'FOK']
+Liquidity = Literal['MAKER', 'TAKER']
+FillType = Literal['LIMIT', 'LIQUIDATED', 'LIQUIDATION', 'DELEVERAGED', 'OFFSETTING']
+"""
+`LIMIT`: Result of a regular limit order.
+`LIQUIDATED`: Result of liquidating another trader's position.
+`LIQUIDATION`: Result of one's own position being liquidated.
+`DELEVERAGED`: Caused by automatic deleveraging in risk management.
+`OFFSETTING`: Result of offsetting positions, often for risk reduction.
+"""
+
+TransferType = Literal['TRANSFER_IN', 'TRANSFER_OUT', 'DEPOSIT', 'WITHDRAWAL']

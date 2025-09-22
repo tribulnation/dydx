@@ -1,35 +1,35 @@
 from typing_extensions import Any, TypeVar, Generic, Literal, TypedDict, AsyncIterable
 from abc import abstractmethod
 from dataclasses import dataclass, field
-from collections import defaultdict
 import asyncio
 
+from dydx.core import UserError
 from .base import RpcSocketClient
 
 M = TypeVar('M', default=Any)
 R = TypeVar('R', default=Any)
 S = TypeVar('S', default=Any)
+D = TypeVar('D', default=Any)
 
 class Response(TypedDict, Generic[R]):
   kind: Literal['response']
   response: R
 
-class Subscription(TypedDict, Generic[S]):
+class Subscription(TypedDict, Generic[D]):
   kind: Literal['subscription']
   channel: str
-  data: S
+  data: D
 
-Message = Response[R] | Subscription[S]
+Message = Response[R] | Subscription[D]
 
 @dataclass
-class StreamsRPCSocketClient(RpcSocketClient[M, R], Generic[M, R, S]):
-  """Multiplexed streams socket client, allowing subscription to multiple channels. Also supports serial request/response communication, using a lock to serialize requests"""
-  lock: asyncio.Lock = field(default_factory=asyncio.Lock, init=False)
-  replies: asyncio.Queue[R] = field(default_factory=asyncio.Queue, init=False)
-  subscribers: dict[str, list[asyncio.Queue[S]]] = field(default_factory=lambda: defaultdict(list), init=False)
+class StreamsRPCSocketClient(RpcSocketClient[M, R], Generic[M, R, S, D]):
+  lock: asyncio.Lock = field(default_factory=asyncio.Lock, init=False, repr=False)
+  replies: asyncio.Queue[R] = field(default_factory=asyncio.Queue, init=False, repr=False)
+  subscribers: dict[str, asyncio.Queue[S]] = field(default_factory=dict, init=False, repr=False)
 
   @abstractmethod
-  async def req_subscription(self, channel: str, **kwargs):
+  async def req_subscription(self, channel: str, *, id: str | None = None, batched: bool | None = None) -> S:
     ...
 
   @abstractmethod
@@ -37,7 +37,7 @@ class StreamsRPCSocketClient(RpcSocketClient[M, R], Generic[M, R, S]):
     ...
 
   @abstractmethod
-  def parse_msg(self, msg: str | bytes) -> Message[R, S] | None:
+  def parse_msg(self, msg: str | bytes) -> Message[R, D] | None:
     ...
 
   def on_msg(self, msg: str | bytes):
@@ -47,7 +47,7 @@ class StreamsRPCSocketClient(RpcSocketClient[M, R], Generic[M, R, S]):
     elif obj['kind'] == 'response':
       self.replies.put_nowait(obj['response'])
     elif obj['kind'] == 'subscription':
-      for q in self.subscribers[obj['channel']]:
+      if (q := self.subscribers.get(obj['channel'])) is not None:
         q.put_nowait(obj['data'])
 
   @abstractmethod
@@ -59,14 +59,24 @@ class StreamsRPCSocketClient(RpcSocketClient[M, R], Generic[M, R, S]):
       await self.send(msg)
       return await self.replies.get()
 
-  async def subscribe(self, channel: str, *, id: str | None = None, batched: bool | None = None) -> AsyncIterable[S]:
-    q = asyncio.Queue()
-    self.subscribers[channel].append(q)
-    await self.req_subscription(channel, id=id, batched=batched)
-    while True:
-      yield await self.wait_with_listener(q.get())
+  async def subscribe(self, channel: str, *, id: str | None = None, batched: bool | None = None) -> tuple[S, AsyncIterable[D]]:
+    if channel in self.subscribers:
+      raise UserError(f'Channel {channel} already subscribed')
+
+    self.subscribers[channel] = asyncio.Queue()
+    r = await self.req_subscription(channel, id=id, batched=batched)
+
+    async def gen():
+      while True:
+        if (q := self.subscribers.get(channel)) is None:
+          break # channel unsubscribed
+        yield await self.wait_with_listener(q.get())
+
+    return r, gen()
 
   async def unsubscribe(self, channel: str):
+    if channel not in self.subscribers:
+      raise UserError(f'Channel {channel} not subscribed')
     del self.subscribers[channel]
     await self.req_unsubscription(channel)
 

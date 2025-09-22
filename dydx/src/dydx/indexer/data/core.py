@@ -49,6 +49,13 @@ class IndexerMixin:
   def validate(self, validate: bool | None = None) -> bool:
     return self.default_validate if validate is None else validate
 
+  async def __aenter__(self):
+    await self.client.__aenter__()
+    return self
+  
+  async def __aexit__(self, exc_type, exc_value, traceback):
+    await self.client.__aexit__(exc_type, exc_value, traceback)
+
   async def request(
     self, method: str, path: str,
     *,
