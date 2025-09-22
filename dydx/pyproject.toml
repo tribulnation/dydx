@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dydx-trading-sdk"
+version = "0.1.0"
+authors = [
+  {name="Marcel Claramunt", email="marcel@tribulnation.com"}
+]
+description = "The unofficial, actually good, fully-typed async Python SDK for dYdX v4, by Tribulnation."
+dependencies = [
+  "httpx",
+  "v4-proto",
+]
+requires-python = ">=3.10"
+readme = {file="README.md", content-type="text/markdown"}
+
+[project.urls]
+repo = "https://github.com/tribulnation/dydx.git"
