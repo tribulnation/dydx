@@ -3,13 +3,14 @@ from .enums import (
   Liquidity, FillType, TransferType,
 )
 from .order import OrderState
-from .positions import PerpetualPosition, AssetPosition
+from .positions import PerpetualPosition, PerpetualPositionStatus, AssetPosition
 from .misc import Account
+from .market import PerpetualMarket
 
 __all__ = [
   'PositionSide', 'OrderSide', 'OrderStatus', 'OrderType', 'TimeInForce',
   'Liquidity', 'FillType', 'TransferType',
   'OrderState',
-  'PerpetualPosition', 'AssetPosition',
-  'Account',
+  'PerpetualPosition', 'PerpetualPositionStatus', 'AssetPosition',
+  'Account', 'PerpetualMarket',
 ]

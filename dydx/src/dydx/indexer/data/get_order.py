@@ -10,13 +10,13 @@ parse_response = response_parser(OrderState)
 @dataclass
 class GetOrder(IndexerMixin):
   @overload
-  async def get_order(self, orderId: str, *, validate: bool = True, unsafe: Literal[True] = True) -> OrderState:
+  async def get_order(self, orderId: str, *, validate: bool | None = None, unsafe: Literal[True] = True) -> OrderState:
     ...
   @overload
-  async def list_orders(self, orderId: str, *, validate: bool = True) -> Response[OrderState]:
+  async def get_order(self, orderId: str, *, validate: bool | None = None) -> Response[OrderState]:
     ...
   async def get_order(
-    self, orderId: str, *, validate: bool = True, unsafe: bool = False,
+    self, orderId: str, *, validate: bool | None = None, unsafe: bool = False,
   ) -> Response[OrderState] | OrderState:
     """Retrieves detailed information about a specific order based on its unique identifier (the order ID).
 

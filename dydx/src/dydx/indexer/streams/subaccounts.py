@@ -72,8 +72,8 @@ class UpdateOrder(TypedDict):
   postOnly: NotRequired[bool|None]
   reduceOnly: NotRequired[bool|None]
   status: OrderStatus
-  orderFlags: str
-  totalFilled: str
+  orderFlags: NotRequired[str|None]
+  totalFilled: NotRequired[str|None]
   totalOptimisticFilled: NotRequired[str|None]
   goodTilBlock: NotRequired[str|None]
   goodTilBlockTime: NotRequired[str|None]
@@ -136,7 +136,7 @@ validate_update_batch = validator(list[UpdateMessage])
 class Subaccounts(StreamsMixin):
   async def subaccounts(
     self, address: str, *, subaccount: int,
-    validate: bool = True, batched: bool = True,
+    validate: bool | None = None, batched: bool = True,
   ) -> tuple[InitialSubaccount, AsyncIterable[UpdateMessage]]:
     res, stream = await self.client.subscribe('v4_subaccounts', id=f'{address}/{subaccount}', batched=batched)
 

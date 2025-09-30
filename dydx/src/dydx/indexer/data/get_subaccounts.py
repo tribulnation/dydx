@@ -27,7 +27,7 @@ class GetSubaccounts(IndexerMixin):
   async def get_subaccounts(
     self, address: str, *,
     limit: int | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
     unsafe: Literal[True] = True,
   ) -> Subaccounts:
     ...
@@ -35,13 +35,13 @@ class GetSubaccounts(IndexerMixin):
   async def get_subaccounts(
     self, address: str, *,
     limit: int | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
   ) -> Response[Subaccounts]:
     ...
   async def get_subaccounts(
     self, address: str, *,
     limit: int | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
     unsafe: bool = False,
   ) -> Response[Subaccounts] | Subaccounts:
     """Retrieves a list of subaccounts associated with a given address. Subaccounts are related addresses that fall under the authority or ownership of the primary address.

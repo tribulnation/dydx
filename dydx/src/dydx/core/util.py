@@ -10,7 +10,7 @@ def filter_kwargs(Params: type[D], params: D | dict) -> D:
 class timestamp:
   @staticmethod
   def parse(time: str) -> datetime:
-    return datetime.fromisoformat(time)
+    return datetime.fromisoformat(time).astimezone()
 
   @staticmethod
   def dump(dt: datetime) -> str:

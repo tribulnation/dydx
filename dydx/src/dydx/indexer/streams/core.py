@@ -94,3 +94,7 @@ class StreamsMixin:
   
   async def __aexit__(self, exc_type, exc_value, traceback):
     await self.client.__aexit__(exc_type, exc_value, traceback)
+
+  @classmethod
+  def new(cls, url: str = INDEXER_WS_URL, *, validate: bool = True):
+    return cls(client=StreamsClient(url=url), default_validate=validate)

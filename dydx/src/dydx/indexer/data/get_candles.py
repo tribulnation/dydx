@@ -1,4 +1,4 @@
-from typing_extensions import Literal, overload, AsyncIterable, Sequence
+from typing_extensions import Literal, overload, AsyncIterable, Sequence, NotRequired
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -18,14 +18,14 @@ class Candle(TypedDict):
   baseTokenVolume: str
   usdVolume: str
   trades: int
-  startingOpenInterest: str
-  orderbookMidPriceOpen: str
-  orderbookMidPriceClose: str
+  startingOpenInterest: NotRequired[str|None]
+  orderbookMidPriceOpen: NotRequired[str|None]
+  orderbookMidPriceClose: NotRequired[str|None]
 
-class GetCandles(TypedDict):
+class Candles(TypedDict):
   candles: list[Candle]
 
-parse_response = response_parser(GetCandles)
+parse_response = response_parser(Candles)
 
 @dataclass
 class GetCandles(IndexerMixin):
@@ -35,9 +35,9 @@ class GetCandles(IndexerMixin):
     start: datetime | None = None,
     end: datetime | None = None,
     limit: int | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
     unsafe: Literal[True] = True,
-  ) -> GetCandles:
+  ) -> Candles:
     ...
   @overload
   async def get_candles(
@@ -45,17 +45,17 @@ class GetCandles(IndexerMixin):
     start: datetime | None = None,
     end: datetime | None = None,
     limit: int | None = None,
-    validate: bool = True,
-  ) -> Response[GetCandles]:
+    validate: bool | None = None,
+  ) -> Response[Candles]:
     ...
   async def get_candles(
     self, market: str, resolution: Resolution, *,
     start: datetime | None = None,
     end: datetime | None = None,
     limit: int | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
     unsafe: bool = False,
-  ) -> Response[GetCandles] | GetCandles:
+  ) -> Response[Candles] | Candles:
     """Retrieves candle data for a specific perpetual market.
 
     - `market`: The market ticker (e.g. `'BTC-USD'`).

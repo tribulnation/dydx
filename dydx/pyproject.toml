@@ -10,8 +10,12 @@ authors = [
 ]
 description = "The unofficial, actually good, fully-typed async Python SDK for dYdX v4, by Tribulnation."
 dependencies = [
+  "lazy-loader"
   "httpx",
+  "websockets",
   "v4-proto",
+  "dydx-v4-client",
+  "pydantic",
 ]
 requires-python = ">=3.10"
 readme = {file="README.md", content-type="text/markdown"}

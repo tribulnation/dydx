@@ -12,7 +12,7 @@ class ListOrders(IndexerMixin):
   @overload
   async def list_orders(
     self, address: str, *,
-    subaccount_number: int,
+    subaccount: int = 0,
     limit: int | None = None,
     ticker: str | None = None,
     side: OrderSide | None = None,
@@ -21,14 +21,14 @@ class ListOrders(IndexerMixin):
     good_til_block_end: int | None = None,
     good_til_block_time_end: datetime | None = None,
     latest_only: bool | None = None,
-    validate: bool = True,
-    unsafe: Literal[True] = True,
+    validate: bool | None = None,
+    unsafe: Literal[True],
   ) -> list[OrderState]:
     ...
   @overload
   async def list_orders(
     self, address: str, *,
-    subaccount_number: int,
+    subaccount: int = 0,
     limit: int | None = None,
     ticker: str | None = None,
     side: OrderSide | None = None,
@@ -37,12 +37,12 @@ class ListOrders(IndexerMixin):
     good_til_block_end: int | None = None,
     good_til_block_time_end: datetime | None = None,
     latest_only: bool | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
   ) -> Response[list[OrderState]]:
     ...
   async def list_orders(
     self, address: str, *,
-    subaccount_number: int,
+    subaccount: int = 0,
     limit: int | None = None,
     ticker: str | None = None,
     side: OrderSide | None = None,
@@ -51,13 +51,13 @@ class ListOrders(IndexerMixin):
     good_til_block_end: int | None = None,
     good_til_block_time_end: datetime | None = None,
     latest_only: bool | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
     unsafe: bool = False,
   ) -> Response[list[OrderState]] | list[OrderState]:
     """Retrieves orders for a specific subaccount, with various filtering options to narrow down the results based on order characteristics.
 
     - `address`: The wallet address that owns the account.
-    - `subaccount_number`: The identifier for the specific subaccount within the wallet address.
+    - `subaccount`: The identifier for the specific subaccount within the wallet address.
     - `limit`: Maximum number of asset positions to return in the response.
     - `ticker`: The ticker filter.
     - `side`: The order side filter (LONG or SHORT).
@@ -71,7 +71,7 @@ class ListOrders(IndexerMixin):
 
     > [dYdX API docs](https://docs.dydx.xyz/indexer-client/http#list-orders)
     """
-    params = {'address': address, 'subaccountNumber': subaccount_number}
+    params = {'address': address, 'subaccountNumber': subaccount}
     if limit is not None:
       params['limit'] = limit
     if ticker is not None:

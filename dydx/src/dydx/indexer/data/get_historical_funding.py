@@ -5,12 +5,6 @@ from datetime import datetime
 from dydx.core import timestamp as ts, TypedDict
 from .core import IndexerMixin, response_parser, Response
 
-"""{'ticker': 'BTC-USD',
-    'rate': '0.000025875',
-    'price': '120049.39506',
-    'effectiveAtHeight': '52588613',
-    'effectiveAt': '2025-08-12T23:00:00.211Z'}"""
-
 class Funding(TypedDict):
   ticker: str
   rate: str
@@ -31,7 +25,7 @@ class GetHistoricalFunding(IndexerMixin):
     end: datetime | None = None,
     end_block: int | None = None,
     limit: int | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
     unsafe: Literal[True] = True,
   ) -> HistoricalFunding:
     ...
@@ -41,7 +35,7 @@ class GetHistoricalFunding(IndexerMixin):
     end: datetime | None = None,
     end_block: int | None = None,
     limit: int | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
   ) -> Response[HistoricalFunding]:
     ...
   async def get_historical_funding(
@@ -49,7 +43,7 @@ class GetHistoricalFunding(IndexerMixin):
     end: datetime | None = None,
     end_block: int | None = None,
     limit: int | None = None,
-    validate: bool = True,
+    validate: bool | None = None,
     unsafe: bool = False,
   ) -> Response[HistoricalFunding] | HistoricalFunding:
     """Retrieves historical funding rates for a specific perpetual market..

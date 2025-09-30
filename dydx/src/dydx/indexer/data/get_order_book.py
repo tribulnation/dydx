@@ -17,13 +17,13 @@ parse_response = response_parser(Book)
 @dataclass
 class GetOrderBook(IndexerMixin):
   @overload
-  async def get_order_book(self, market: str, /, *, unsafe: Literal[True] = True, validate: bool = True) -> Book:
+  async def get_order_book(self, market: str, /, *, unsafe: Literal[True] = True, validate: bool | None = None) -> Book:
     ...
   @overload
-  async def get_order_book(self, market: str, /, *, validate: bool = True) -> Response[Book]:
+  async def get_order_book(self, market: str, /, *, validate: bool | None = None) -> Response[Book]:
     ...
   async def get_order_book(
-    self, market: str, /, *, unsafe: bool = False, validate: bool = True
+    self, market: str, /, *, unsafe: bool = False, validate: bool | None = None
   ) -> Response[Book] | Book:
     """Retrieves the orderbook for a specific perpetual market.
     
