@@ -1,0 +1,7 @@
+lazy-loader
+httpx
+websockets
+pydantic
+orjson
+v4-proto
+dydx-v4-client

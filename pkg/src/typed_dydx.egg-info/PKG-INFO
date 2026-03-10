@@ -1,3 +1,28 @@
+Metadata-Version: 2.4
+Name: typed-dydx
+Version: 0.3.0
+Summary: A fully typed, validated async client for the dYdX API.
+Author-email: Marcel Claramunt <marcel@tribulnation.com>
+License-Expression: GPL-3.0-only
+Project-URL: Repository, https://github.com/tribulnation/dydx.git
+Project-URL: Documentation, https://dydx.tribulnation.com
+Project-URL: Website, https://tribulnation.com
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: lazy-loader
+Requires-Dist: httpx
+Requires-Dist: websockets
+Requires-Dist: pydantic
+Requires-Dist: orjson
+Requires-Dist: v4-proto
+Requires-Dist: dydx-v4-client
+Dynamic: license-file
+
 # Typed dYdX
 
 > A fully typed, validated async client for the dYdX v4 APIs
