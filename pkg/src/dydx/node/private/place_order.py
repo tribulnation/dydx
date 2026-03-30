@@ -6,11 +6,13 @@ from v4_proto.dydxprotocol.clob.tx_pb2 import MsgPlaceOrder
 from v4_proto.dydxprotocol.clob.order_pb2 import Order as OrderProto
 from v4_proto.cosmos.tx.v1beta1.service_pb2 import BroadcastTxResponse, BroadcastMode
 from dydx_v4_client import OrderFlags
+from dydx_v4_client.wallet import Wallet
 from dydx_v4_client.node.market import Market
 from dydx_v4_client.indexer.rest.constants import OrderType
 from dydx_v4_client.node.builder import TxOptions
 
-from dydx.core import ApiError, SHORT_BLOCK_WINDOW, STATEFUL_ORDER_TIME_WINDOW
+from typed_core.exceptions import ApiError
+from dydx.core import SHORT_BLOCK_WINDOW, STATEFUL_ORDER_TIME_WINDOW
 from dydx.indexer.types import PerpetualMarket
 from dydx.node.core import PrivateNodeMixin
 
@@ -25,8 +27,6 @@ class Order(TypedDict):
   price: Decimal
   flags: Flags
   time_in_force: NotRequired[TimeInForce]
-  good_til_block: NotRequired[int]
-  good_til_block_time: NotRequired[int]
   client_metadata: NotRequired[int]
   condition_type: NotRequired[ConditionType]
   conditional_order_trigger_subticks: NotRequired[int]
@@ -79,14 +79,14 @@ class OrderResponse(TypedDict):
 class PlaceOrder(PrivateNodeMixin):
 
   def build_order(
-    self, *, market: PerpetualMarket, order: Order,
+    self, wallet: Wallet, *, market: PerpetualMarket, order: Order,
     good_til_block: int | None = None, good_til_block_time: int | None = None,
     subaccount: int = 0,
   ):
     mkt = Market(market) # type: ignore
     client_id = order.get('client_id') or rand_id()
     order_id = mkt.order_id(
-      address=self.address, subaccount_number=subaccount,
+      address=wallet.address, subaccount_number=subaccount,
       client_id=client_id, order_flags=parse_flags(order['flags']),
     )
     return OrderProto(
@@ -103,33 +103,49 @@ class PlaceOrder(PrivateNodeMixin):
       conditional_order_trigger_subticks=order.get('conditional_order_trigger_subticks'),
     )
 
-  async def build_order_now(self, market: PerpetualMarket, order: Order, *, subaccount: int = 0):
+  async def build_order_now(
+    self, market: PerpetualMarket, order: Order, *, subaccount: int = 0,
+    gtb_delta: int | None = None, gtbt_delta: int | None = None
+  ):
     if (gtb := order.get('good_til_block')) is None and order['flags'] == 'SHORT_TERM':
       latest_block = await self.node_client.latest_block()
-      gtb = latest_block.block.header.height + SHORT_BLOCK_WINDOW
+      if gtb_delta is None:
+        gtb_delta = SHORT_BLOCK_WINDOW
+      gtb = latest_block.block.header.height + gtb_delta
 
     if (gtbt := order.get('good_til_block_time')) is None and order['flags'] == 'LONG_TERM':
       latest_block = await self.node_client.latest_block()
-      gtbt = latest_block.block.header.time.seconds + STATEFUL_ORDER_TIME_WINDOW
+      if gtbt_delta is None:
+        gtbt_delta = STATEFUL_ORDER_TIME_WINDOW
+      gtbt = latest_block.block.header.time.seconds + gtbt_delta
       gtb = None
 
-    return self.build_order(market=market, order=order, good_til_block=gtb, good_til_block_time=gtbt, subaccount=subaccount)
+    wallet = await self.wallet
+    return self.build_order(wallet=wallet, market=market, order=order, good_til_block=gtb, good_til_block_time=gtbt, subaccount=subaccount)
 
   async def place_order(
     self, market: PerpetualMarket, order: Order, *, subaccount: int = 0,
     mode: BroadcastMode = BroadcastMode.BROADCAST_MODE_SYNC, tx_options: TxOptions | None = None,
+    gtb_delta: int | None = None, gtbt_delta: int | None = None,
+    good_til_block: int | None = None, good_til_block_time: int | None = None,
   ) -> OrderResponse:
     """Place an order.
     
     - `market`: market to place the order on
     - `order`: order to place
     - `subaccount`: subaccount to place the order on
+    - `gtb_delta`: sets good-til-block for short-term orders to `current_block() + gtb_delta`
+    - `gtbt_delta`: sets good-til-block-time (in seconds) for long-term-orders to  `current_block().time.seconds + gtbt_delta`
 
     > [dYdX API docs](https://docs.dydx.xyz/node-client/private#place-order)
     """
-    order_proto = await self.build_order_now(market, order, subaccount=subaccount)
+    wallet = await self.wallet
+    if good_til_block is not None or good_til_block_time is not None:
+      order_proto = self.build_order(wallet=wallet, market=market, order=order, good_til_block=good_til_block, good_til_block_time=good_til_block_time, subaccount=subaccount)
+    else:
+      order_proto = await self.build_order_now(market=market, order=order, subaccount=subaccount, gtb_delta=gtb_delta, gtbt_delta=gtbt_delta)
     tx: BroadcastTxResponse = await self.node_client.broadcast_message(
-      self.wallet, MsgPlaceOrder(order=order_proto), # type: ignore
+      wallet, MsgPlaceOrder(order=order_proto), # type: ignore
       mode=mode, tx_options=tx_options
     )
     if tx.tx_response.code != 0:

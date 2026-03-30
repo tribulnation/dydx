@@ -1,16 +1,18 @@
 from typing_extensions import TypeVar, Any, Mapping
 from dataclasses import dataclass, field
+import pydantic
 import httpx
 
-from dydx.core import HttpClient, validator, path_join, ApiError
+from typed_core import HttpClient, ApiError
+from typed_core.util import path_join
 
 T = TypeVar('T')
 
 def response_parser(type: type[T]):
-  val = validator(type)
+  adapter = pydantic.TypeAdapter(type)
   def parse_response(r: httpx.Response, *, validate: bool = True) -> T:
     if r.status_code == 200:
-      return val(r.text) if validate else r.json()
+      return adapter.validate_json(r.text) if validate else r.json()
     else:
       raise ApiError(r.status_code, r.json())
   return parse_response

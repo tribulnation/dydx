@@ -2,9 +2,9 @@
 
 Signed trading actions exposed by the dYdX node client wrapper.
 
-## `connect`
+## `new`
 
-::: dydx.node.core.PrivateNodeMixin.connect
+::: dydx.node.core.PrivateNodeMixin.new
     options:
       show_root_heading: false
       show_root_toc_entry: false

@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from grpc._channel import _InactiveRpcError
 
-from dydx.core import ApiError
+from typed_core.exceptions import ApiError
 from dydx.node.core import PublicNodeMixin
 
 @dataclass

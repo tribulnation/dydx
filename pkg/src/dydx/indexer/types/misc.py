@@ -1,4 +1,4 @@
-from dydx.core import TypedDict
+from typing_extensions import TypedDict
 from .positions import PerpetualPosition, AssetPosition
 
 class Account(TypedDict):

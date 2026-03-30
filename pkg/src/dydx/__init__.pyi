@@ -1,4 +1,5 @@
 from .indexer import Indexer
-from .node import PublicNode, PrivateNode
+from .node import Node
+from .main import DYDX
 
-__all__ = ['Indexer', 'PublicNode', 'PrivateNode']
+__all__ = ['Indexer', 'Node', 'DYDX']

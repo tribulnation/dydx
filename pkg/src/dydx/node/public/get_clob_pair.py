@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from grpc._channel import _InactiveRpcError
 
 from v4_proto.dydxprotocol.clob.clob_pair_pb2 import ClobPair
-from dydx.core import ApiError
+from typed_core.exceptions import ApiError
 from dydx.node.core import PublicNodeMixin
 
 @dataclass

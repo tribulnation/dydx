@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: typed-dydx
-Version: 0.3.0
+Version: 0.4.1
 Summary: A fully typed, validated async client for the dYdX API.
 Author-email: Marcel Claramunt <marcel@tribulnation.com>
 License-Expression: GPL-3.0-only
@@ -13,53 +13,6 @@ Classifier: Programming Language :: Python :: 3.11
 Classifier: Typing :: Typed
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
-License-File: LICENSE
-Requires-Dist: lazy-loader
-Requires-Dist: httpx
-Requires-Dist: websockets
-Requires-Dist: pydantic
-Requires-Dist: orjson
+Requires-Dist: typed-core
 Requires-Dist: v4-proto
 Requires-Dist: dydx-v4-client
-Dynamic: license-file
-
-# Typed dYdX
-
-> A fully typed, validated async client for the dYdX v4 APIs
-
-**Use autocomplete instead of documentation.**
-
-```python
-from dydx import Indexer
-
-async with Indexer.new() as indexer:
-  btc = await indexer.data.get_market('BTC-USD')
-  print(btc['oraclePrice'])
-```
-
-## Why Typed dYdX?
-
-- **🎯 Precise Types**: Strong typing throughout, so your editor can help before runtime does.
-- **✅ Automatic Validation**: Catch upstream API changes earlier, where they are easier to debug.
-- **⚡ Async First**: Built for concurrent, network-heavy workflows.
-- **🔒 Safer Usage**: Typed inputs and explicit errors reduce avoidable mistakes.
-- **🎨 Better DX**: Clear routing, sensible defaults, and minimal ceremony.
-- **📦 Practical Extras**: Pagination, streams, and helpers where they actually help.
-
-## Package Shape
-
-This package intentionally follows the way dYdX itself is split:
-
-- `Indexer` for HTTP market/account data and WebSocket subaccount streams
-- `PublicNode` for public node reads like prices, CLOB pair data, and fee tiers
-- `PrivateNode` for signed trading actions like placing and cancelling orders
-
-## Installation
-
-```bash
-pip install typed-dydx
-```
-
-## Documentation
-
-> [**Read the docs**](https://dydx.tribulnation.com)

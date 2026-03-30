@@ -21,34 +21,59 @@ async with Indexer.new() as indexer:
 
 ### `Indexer.data`
 
-Implemented read methods include:
+Implemented HTTP read methods include:
 
-- `get_markets`, `get_market`
-- `get_order_book`
-- `get_trades`
+- `get_asset_positions`
 - `get_candles`, `get_candles_paged`
+- `get_compliance_screen`
 - `get_fills`, `get_fills_paged`
 - `get_funding_payments`, `get_funding_payments_paged`
+- `get_funding_payments_for_parent_subaccount`
+- `get_height`
 - `get_historical_funding`, `get_historical_funding_paged`
+- `get_historical_pnl`
+- `get_markets`, `get_market`
+- `get_megavault_historical_pnl`, `get_megavault_positions`
+- `get_order`, `get_order_book`
+- `get_parent_asset_positions`
+- `get_parent_fills`
+- `get_parent_historical_pnl`
+- `get_parent_subaccount`
+- `get_parent_subaccount_fills`
+- `get_parent_subaccount_orders`
+- `get_parent_subaccount_transfers`
+- `get_parent_transfers`
+- `get_rewards`, `get_rewards_aggregated`
+- `get_screen`, `get_sparklines`
 - `get_subaccount`, `get_subaccounts`
-- `get_transfers`, `get_transfers_paged`
-- `list_orders`
-- `list_positions`
+- `get_time`, `get_trades`
+- `get_transfers`, `get_transfers_paged`, `get_transfers_between`
+- `get_vaults_historical_pnl`
+- `list_orders`, `list_parent_orders`
+- `list_parent_positions`, `list_positions`, `get_open_position`
+
+`Indexer.data` includes the full documented read surface, along with convenience methods such as `get_market()`, `get_open_position()`, and the `*_paged()` iterators.
 
 ### `Indexer.streams`
 
 Current stream coverage:
 
+- `block_height(batched=True)`
+- `candles(market, resolution=..., batched=True)`
+- `markets(batched=True)`
+- `orders(id=..., batched=True)`
+- `parent_subaccounts(address, subaccount=0, batched=True)`
 - `subaccounts(address, subaccount=0, batched=True)`
+- `trades(id=..., batched=True)`
 
 ## PublicNode
 
 Use `PublicNode` for public node reads backed by the dYdX node client.
 
 ```python
-from dydx import PublicNode
+from dydx.node import PublicNode
 
-node = await PublicNode.connect()
+node = PublicNode.public()
 ```
 
 Implemented methods:
@@ -62,9 +87,9 @@ Implemented methods:
 Use `PrivateNode` for signed trading actions.
 
 ```python
-from dydx import PrivateNode
+from dydx.node import PrivateNode
 
-node = await PrivateNode.connect()
+node = PrivateNode.new()
 ```
 
 Implemented methods:

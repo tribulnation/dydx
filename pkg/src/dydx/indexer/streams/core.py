@@ -1,10 +1,12 @@
-from typing_extensions import Literal, Any, NotRequired
+from typing_extensions import Literal, Any, NotRequired, TypedDict
 from dataclasses import dataclass, field
-import json
+import asyncio
 import logging
+import orjson
+import pydantic
 
-from dydx.core import ApiError, TypedDict, validator
-from dydx.core.ws.streams_rpc import StreamsRPCSocketClient, Message
+from typed_core import LogicError, BadRequest
+from typed_core.ws.streams import Streams, Subscription
 
 logger = logging.getLogger('dydx.indexer.streams')
 
@@ -17,68 +19,101 @@ class BaseMessage(TypedDict):
 class Connected(BaseMessage):
   type: Literal['connected']
 
-class Subscribed(BaseMessage):
-  type: Literal['subscribed']
+class Channel(TypedDict):
   channel: str
-  id: NotRequired[str|None]
+  id: NotRequired[str]
+
+class Subscribed(BaseMessage, Channel):
+  type: Literal['subscribed']
   contents: Any
 
-class Unsubscribed(BaseMessage):
+class Unsubscribed(BaseMessage, Channel):
   type: Literal['unsubscribed']
-  channel: str
-  id: NotRequired[str|None]
 
 class Error(BaseMessage):
   type: Literal['error']
 
-class Data(BaseMessage):
+class Notification(BaseMessage, Channel):
   type: Literal['channel_data', 'channel_batch_data']
-  id: NotRequired[str|None]
-  channel: str
   version: str
   contents: Any
 
-Reply = Subscribed | Unsubscribed | Error
-Msg = Connected | Reply | Data
+Msg = Connected | Subscribed | Unsubscribed | Error | Notification
+MsgT: type[Msg] = Msg # type: ignore
 
-validate_message = validator(Msg) # type: ignore
+msg_adapter = pydantic.TypeAdapter(MsgT)
 
-@dataclass(kw_only=True)
-class StreamsClient(StreamsRPCSocketClient[Any, Reply, Subscribed, Data]):
+class Params(TypedDict, total=False):
+  batched: bool
+
+def parse_channel_id(channel_id: str) -> tuple[str, str|None]:
+  if ':' in channel_id:
+    channel, id = channel_id.split(':')
+    return channel, id
+  else:
+    return channel_id, None
+
+def channel_id(msg: Channel) -> str:
+  out = msg['channel']
+  if (id := msg.get('id')) is not None and id != msg['channel']: # yes that happens, it's a dydx bug
+    out += f':{id}'
+  return out
+
+@dataclass
+class StreamsClient(Streams[Notification, Params, Subscribed, Unsubscribed]):
   url: str = INDEXER_WS_URL
+  lock: asyncio.Lock = field(default_factory=asyncio.Lock, init=False, repr=False)
+  replies: asyncio.Queue[Error | Subscribed | Unsubscribed] = field(default_factory=asyncio.Queue)
 
-  def parse_msg(self, msg: str | bytes) -> Message[Reply, Data] | None:
-    obj = validate_message(msg)
+  def parse_msg(self, msg: str | bytes) -> Subscription | None:
+    obj = msg_adapter.validate_json(msg)
     match obj['type']:
-      case 'connected':
-        logger.info('Connected')
+      case 'subscribed' | 'unsubscribed' | 'error':
+        self.replies.put_nowait(obj)
       case 'channel_data' | 'channel_batch_data':
-        return {'kind': 'subscription', 'channel': obj['channel'], 'data': obj}
-      case _:
-        return {'kind': 'response', 'response': obj}
+        channel = channel_id(obj)
+        return {'channel': channel, 'notification': obj}
 
   async def send(self, msg):
     ws = await self.ws
-    await ws.send(json.dumps(msg))
+    await ws.send(orjson.dumps(msg), text=True)
 
-  async def req_subscription(self, channel: str, **kwargs) -> Subscribed:
-    r = await self.request({
+  async def request(self, msg):
+    async with self.lock:
+      await self.send(msg)
+      return await self.replies.get()
+
+  async def request_subscription(self, channel: str, params: Params | None = None) -> Subscribed:
+    channel, id = parse_channel_id(channel)
+    msg: dict = {
       'type': 'subscribe',
       'channel': channel,
-      **kwargs,
-    })
-    if r['type'] == 'error':
-      raise ApiError(None, r)
-    elif r['type'] != 'subscribed':
-      raise ApiError(None, f'Unexpected response type: {r["type"]}', r)
-    return r
+    }
+    if (params or {}).get('batched', False):
+      msg['batched'] = True
+    if id is not None:
+      msg['id'] = id
+    reply = await self.request(msg)
+    if reply['type'] == 'error':
+      raise BadRequest(reply)
+    elif reply['type'] != 'subscribed':
+      raise LogicError(f'Unexpected response type: {reply}')
+    return reply
 
-  async def req_unsubscription(self, channel: str):
-    await self.send({
+  async def request_unsubscription(self, channel: str, params: Params | None = None) -> Unsubscribed:
+    channel, id = parse_channel_id(channel)
+    msg = {
       'type': 'unsubscribe',
       'channel': channel,
-    })
-
+    }
+    if id is not None:
+      msg['id'] = id
+    reply = await self.request(msg)
+    if reply['type'] == 'error':
+      raise BadRequest(reply)
+    if reply['type'] != 'unsubscribed':
+      raise LogicError(f'Unexpected response type: {reply}')
+    return reply
 
 @dataclass(kw_only=True)
 class StreamsMixin:

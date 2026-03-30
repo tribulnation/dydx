@@ -1,6 +1,5 @@
-from typing_extensions import NotRequired
+from typing_extensions import NotRequired, TypedDict
 
-from dydx.core import TypedDict
 from .enums import OrderSide, OrderStatus, OrderType, TimeInForce
 
 class OrderState(TypedDict):
@@ -27,6 +26,6 @@ class OrderState(TypedDict):
   updatedAt: NotRequired[str|None]
   updatedAtHeight: NotRequired[str|None]
   orderRouterAddress: NotRequired[str|None]
-  postOnly: NotRequired[bool|None]
+  postOnly:   NotRequired[bool|None]
   ticker: str
   subaccountNumber: int

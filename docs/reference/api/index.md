@@ -1,6 +1,6 @@
-# API Reference
+# Overview
 
-This section is generated from the Python package itself.
+This section documents the Python package reference surface.
 
 ## Pages
 

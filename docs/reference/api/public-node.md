@@ -2,9 +2,9 @@
 
 Public node reads exposed by the dYdX node client wrapper.
 
-## `connect`
+## `public`
 
-::: dydx.node.core.PublicNodeMixin.connect
+::: dydx.node.core.PublicNodeMixin.public
     options:
       show_root_heading: false
       show_root_toc_entry: false

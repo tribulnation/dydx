@@ -7,7 +7,8 @@ from v4_proto.dydxprotocol.clob.tx_pb2 import OrderBatch
 from v4_proto.dydxprotocol.clob.order_pb2 import OrderId
 from v4_proto.cosmos.tx.v1beta1.service_pb2 import BroadcastTxResponse
 
-from dydx.core import ApiError, UserError, SHORT_BLOCK_WINDOW
+from typed_core.exceptions import ApiError, BadRequest
+from dydx.core import SHORT_BLOCK_WINDOW
 from dydx.node.core import PrivateNodeMixin
 
 @dataclass
@@ -27,7 +28,7 @@ class BatchCancelOrders(PrivateNodeMixin):
     orders_by_pair = defaultdict[int, list[int]](list)
     for order_id in order_ids:
       if order_id.order_flags != OrderFlags.SHORT_TERM:
-        raise UserError('Only short-term orders can be cancelled in a batch')
+        raise BadRequest('Only short-term orders can be cancelled in a batch')
       orders_by_pair[order_id.clob_pair_id].append(order_id.client_id)
 
     batches = [
@@ -39,8 +40,9 @@ class BatchCancelOrders(PrivateNodeMixin):
       latest_block = await self.node_client.latest_block()
       good_til_block = latest_block.block.header.height + SHORT_BLOCK_WINDOW
 
+    wallet = await self.wallet
     r: BroadcastTxResponse = await self.node_client.batch_cancel_orders(
-      wallet=self.wallet, subaccount_id=subaccount_id,
+      wallet=wallet, subaccount_id=subaccount_id,
       short_term_cancels=batches,
       good_til_block=good_til_block,
     )

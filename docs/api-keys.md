@@ -18,9 +18,9 @@ export DYDX_MNEMONIC="your twelve or twenty-four word mnemonic"
 ```
 
 ```python
-from dydx import PrivateNode
+from dydx.node import PrivateNode
 
-node = await PrivateNode.connect(mnemonic="your mnemonic here")
+node = PrivateNode.new(mnemonic="your mnemonic here")
 ```
 
 ## Security Notes

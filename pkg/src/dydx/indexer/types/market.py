@@ -1,6 +1,5 @@
-from typing_extensions import Literal
+from typing_extensions import Literal, TypedDict, NotRequired
 from decimal import Decimal
-from dydx.core import TypedDict
 
 MarketType = Literal['CROSS', 'ISOLATED']
 MarketStatus = Literal['ACTIVE', 'PAUSED', 'CANCEL_ONLY', 'POST_ONLY', 'INITIALIZING', 'FINAL_SETTLEMENT']
@@ -28,7 +27,7 @@ class PerpetualMarket(TypedDict):
   stepBaseQuantums: int
   subticksPerTick: int
   marketType: MarketType
-  openInterestLowerCap: Decimal
-  openInterestUpperCap: Decimal
+  openInterestLowerCap: NotRequired[Decimal]
+  openInterestUpperCap: NotRequired[Decimal]
   baseOpenInterest: Decimal
-  defaultFundingRate1H: Decimal
+  defaultFundingRate1H: NotRequired[Decimal]

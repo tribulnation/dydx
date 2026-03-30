@@ -1,7 +1,6 @@
-from typing_extensions import NotRequired, Literal
+from typing_extensions import NotRequired, Literal, TypedDict
 from decimal import Decimal
 
-from dydx.core import TypedDict
 from .enums import PositionSide
 
 PerpetualPositionStatus = Literal['OPEN', 'CLOSED', 'LIQUIDATED']

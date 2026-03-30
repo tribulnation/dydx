@@ -8,8 +8,8 @@
 from dydx import Indexer
 
 async with Indexer.new() as indexer:
-  btc = await indexer.data.get_market('BTC-USD')
-  print(btc['oraclePrice'])
+  market = await indexer.data.get_market('BTC-USD')
+  print(market['oraclePrice'])
 ```
 
 ## Why Typed dYdX?
@@ -25,9 +25,11 @@ async with Indexer.new() as indexer:
 
 This package intentionally follows the way dYdX itself is split:
 
-- `Indexer` for HTTP market/account data and WebSocket subaccount streams
-- `PublicNode` for public node reads like prices, CLOB pair data, and fee tiers
-- `PrivateNode` for signed trading actions like placing and cancelling orders
+- `Indexer` from `dydx` for HTTP market/account data and WebSocket streams
+- `PublicNode` from `dydx.node` for public node reads like prices, CLOB pair data, and fee tiers
+- `PrivateNode` from `dydx.node` for signed trading actions like placing and cancelling orders
+
+`Indexer.data` includes the full documented indexer HTTP read surface, plus a few convenience helpers like `get_market()`, `get_open_position()`, and the `*_paged()` iterators.
 
 ## Installation
 

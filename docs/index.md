@@ -31,17 +31,18 @@ pip install typed-dydx
 
 The package exposes three entry points because dYdX itself is split across the indexer and node APIs:
 
-- `Indexer` for HTTP market/account data and WebSocket streams
-- `PublicNode` for public node reads
-- `PrivateNode` for signed trading actions
+- `Indexer` from `dydx` for HTTP market/account data and WebSocket streams
+- `PublicNode` from `dydx.node` for public node reads
+- `PrivateNode` from `dydx.node` for signed trading actions
 
 ```python
-from dydx import Indexer, PublicNode
+from dydx import Indexer
+from dydx.node import PublicNode
 
 async with Indexer.new() as indexer:
   market = await indexer.data.get_market('BTC-USD')
 
-public_node = await PublicNode.connect()
+public_node = PublicNode.public()
 price = await public_node.get_price(int(market['clobPairId']))
 ```
 
@@ -53,8 +54,7 @@ Notice something? **You never imported `Literal` types.** Just use strings:
 
 ```python
 # ❌ Other libraries
-from some_sdk import Market
-trades = await client.get_trades(Market.BTC_USD)
+# trades = await client.get_trades(Market.BTC_USD)
 
 # ✅ Typed dYdX
 async with Indexer.new() as indexer:
@@ -66,6 +66,8 @@ async with Indexer.new() as indexer:
 Every field is precisely typed. Market metadata is strongly shaped enough to use directly:
 
 ```python
+from decimal import Decimal
+
 async with Indexer.new() as indexer:
   btc = await indexer.data.get_market('BTC-USD')
 
@@ -90,9 +92,12 @@ async with Indexer.new(validate=False) as indexer:
 ### Built-in Pagination
 
 ```python
+import os
+
 async with Indexer.new() as indexer:
   async for chunk in indexer.data.get_fills_paged(
-    address='dydx...',
+    os.environ['DYDX_ADDRESS'],
+    subaccount=0,
     market='BTC-USD',
     market_type='PERPETUAL',
     limit=100,
@@ -108,9 +113,8 @@ Real-time user data comes from the indexer WebSocket API:
 from dydx import Indexer
 
 async with Indexer.new() as indexer:
-  initial, updates = await indexer.streams.subaccounts('dydx...', subaccount=0)
-  async for update in updates:
-    print(update)
+  stream = await indexer.streams.subaccounts('dydx1039f5sxkl0t39vxcsnmlu62ly22typdap0zkyn', subaccount=0)
+  print(stream.reply['subaccount']['equity'])
 ```
 
 ## API Coverage
@@ -129,8 +133,8 @@ Current coverage is split across:
 - [**Getting Started**](getting-started.md) - Install the package and make your first requests
 - [**Trading Access**](api-keys.md) - Configure mnemonic-based trading access
 - [**API Overview**](api-overview.md) - Understand the client structure and coverage
+- [**How To**](how-to/index.md) - Task-focused guides for market data, account data, trading, and streams
 - [**Reference**](reference/index.md) - Error handling, env vars, and endpoint overview
-- [**Examples**](examples/index.md) - Practical usage patterns
 
 ## Design Philosophy
 

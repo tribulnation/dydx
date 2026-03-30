@@ -1,7 +1,3 @@
-lazy-loader
-httpx
-websockets
-pydantic
-orjson
+typed-core
 v4-proto
 dydx-v4-client
