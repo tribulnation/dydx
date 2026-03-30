@@ -9,23 +9,30 @@ No credentials are required for:
 - `Indexer`
 - `PublicNode`
 
+Use these imports for public/read-only workflows:
+
+```python
+from dydx import Indexer
+from dydx.node import PublicNode
+```
+
 ## Private Trading Setup
 
-`PrivateNode` currently uses mnemonic-based access.
+`DYDX` and `PrivateNode` currently use mnemonic-based access.
 
 ```bash
 export DYDX_MNEMONIC="your twelve or twenty-four word mnemonic"
 ```
 
 ```python
-from dydx.node import PrivateNode
+from dydx import DYDX
 
-node = PrivateNode.new(mnemonic="your mnemonic here")
+dydx = DYDX.new(mnemonic="your mnemonic here")
 ```
 
 ## Security Notes
 
 - never commit your mnemonic
 - treat `DYDX_MNEMONIC` as a high-sensitivity secret
-- assume `PrivateNode` examples are mainnet-sensitive unless you change the underlying connection logic
+- assume `DYDX` and `PrivateNode` examples are mainnet-sensitive unless you change the underlying connection logic
 - keep read-only workflows on `Indexer` or `PublicNode` whenever possible

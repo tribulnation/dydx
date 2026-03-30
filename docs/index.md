@@ -5,10 +5,10 @@
 **Use autocomplete instead of documentation.**
 
 ```python
-from dydx import Indexer
+from dydx import DYDX
 
-async with Indexer.new() as indexer:
-  btc = await indexer.data.get_market('BTC-USD')
+async with DYDX.new() as dydx:
+  btc = await dydx.indexer.data.get_market('BTC-USD')
   print(btc['oraclePrice'])
 ```
 
@@ -31,19 +31,17 @@ pip install typed-dydx
 
 The package exposes three entry points because dYdX itself is split across the indexer and node APIs:
 
+- `DYDX` from `dydx` as the default authenticated entry point for combined read/trade workflows
 - `Indexer` from `dydx` for HTTP market/account data and WebSocket streams
 - `PublicNode` from `dydx.node` for public node reads
 - `PrivateNode` from `dydx.node` for signed trading actions
 
 ```python
-from dydx import Indexer
-from dydx.node import PublicNode
+from dydx import DYDX
 
-async with Indexer.new() as indexer:
-  market = await indexer.data.get_market('BTC-USD')
-
-public_node = PublicNode.public()
-price = await public_node.get_price(int(market['clobPairId']))
+async with DYDX.new() as dydx:
+  market = await dydx.indexer.data.get_market('BTC-USD')
+  price = await dydx.node.get_price(int(market['clobPairId']))
 ```
 
 ## Features
@@ -53,6 +51,8 @@ price = await public_node.get_price(int(market['clobPairId']))
 Notice something? **You never imported `Literal` types.** Just use strings:
 
 ```python
+from dydx import Indexer
+
 # ❌ Other libraries
 # trades = await client.get_trades(Market.BTC_USD)
 
@@ -67,6 +67,7 @@ Every field is precisely typed. Market metadata is strongly shaped enough to use
 
 ```python
 from decimal import Decimal
+from dydx import Indexer
 
 async with Indexer.new() as indexer:
   btc = await indexer.data.get_market('BTC-USD')
@@ -80,6 +81,8 @@ oracle_price: Decimal = btc['oraclePrice']
 Response validation is **on by default** but can be disabled:
 
 ```python
+from dydx import Indexer
+
 # Validated (default) - throws ValidationError if API response changes
 async with Indexer.new() as indexer:
   markets = await indexer.data.get_markets(limit=5)
@@ -93,6 +96,7 @@ async with Indexer.new(validate=False) as indexer:
 
 ```python
 import os
+from dydx import Indexer
 
 async with Indexer.new() as indexer:
   async for chunk in indexer.data.get_fills_paged(
@@ -121,6 +125,7 @@ async with Indexer.new() as indexer:
 
 Current coverage is split across:
 
+- `DYDX` as the default private/authenticated surface
 - `Indexer.data` for markets, order books, candles, trades, fills, transfers, subaccounts, funding, orders, and positions
 - `Indexer.streams` for subaccount updates
 - `PublicNode` for price, CLOB pair, and fee-tier reads

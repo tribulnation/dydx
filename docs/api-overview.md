@@ -2,15 +2,29 @@
 
 The package exposes three public entry points:
 
+- `DYDX`
 - `Indexer`
 - `PublicNode`
 - `PrivateNode`
 
 That split mirrors the official dYdX documentation, which separates the indexer APIs from the node APIs.
 
+## `DYDX`
+
+Use `DYDX` by default when you need authenticated/private usage. It combines the indexer and node clients behind one context manager.
+
+```python
+from dydx import DYDX
+
+async with DYDX.new() as dydx:
+  ...
+```
+
+`DYDX.indexer` exposes the full `Indexer` surface, and `DYDX.node` exposes the combined node surface.
+
 ## Indexer
 
-Use `Indexer` for most data retrieval.
+Use `Indexer` for public/read-only data retrieval when you do not need trading access.
 
 ```python
 from dydx import Indexer
@@ -84,7 +98,7 @@ Implemented methods:
 
 ## PrivateNode
 
-Use `PrivateNode` for signed trading actions.
+Use `PrivateNode` directly only when you specifically want the lower-level node wrapper. Prefer `DYDX` for most authenticated workflows.
 
 ```python
 from dydx.node import PrivateNode
@@ -102,6 +116,7 @@ Implemented methods:
 
 - `Indexer` requires no credentials
 - `PublicNode` requires no credentials
+- `DYDX` currently supports mnemonic-based access for `node`
 - `PrivateNode` currently supports mnemonic-based access
 
 See [Trading Access](api-keys.md) for the current authentication model.

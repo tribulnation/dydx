@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide gets you from installation to your first indexer and node requests.
+This guide gets you from installation to your first requests. For authenticated usage, prefer `DYDX` as the default entry point.
 
 ## Install The Package
 
@@ -40,20 +40,17 @@ node = PublicNode.public()
 price = await node.get_price(int(market['clobPairId']))
 ```
 
-## Use The Private Node For Trading
+## Use `DYDX` For Private Workflows
 
-Trading goes through `PrivateNode`. This wrapper currently uses mnemonic-based access.
+For authenticated usage, `DYDX` is the most ergonomic entry point. It gives you both `indexer` and `node` under one context manager.
 
 ```python
 from decimal import Decimal
-from dydx import Indexer
-from dydx.node import PrivateNode
+from dydx import DYDX
 
-async with Indexer.new() as indexer:
-  market = await indexer.data.get_market('BTC-USD')
-
-node = PrivateNode.new()  # uses DYDX_MNEMONIC if omitted
-result = await node.place_order(
+async with DYDX.new() as dydx:
+  market = await dydx.indexer.data.get_market('BTC-USD')
+  result = await dydx.node.place_order(
   market,
   {
     'side': 'BUY',
@@ -62,10 +59,10 @@ result = await node.place_order(
     'flags': 'LONG_TERM',
     'time_in_force': 'POST_ONLY',
   },
-)
+  )
 ```
 
-`PrivateNode` currently supports mnemonic-based access only.
+`DYDX.node` currently supports mnemonic-based access only.
 
 ## Context Manager Pattern
 
@@ -76,10 +73,10 @@ async with Indexer.new() as indexer:
   ...
 ```
 
-`PublicNode` and `PrivateNode` use direct factories: `PublicNode.public()` and `PrivateNode.new()`.
+Use `PublicNode.public()` and `Indexer.new()` for public/read-only workflows. Use `DYDX.new()` by default for authenticated ones.
 
 ## Next Steps
 
-- Read [Trading Access](api-keys.md) before using `PrivateNode`
+- Read [Trading Access](api-keys.md) before using `DYDX` or `PrivateNode`
 - Read [API Overview](api-overview.md) to understand the split between indexer and node clients
 - Browse [How To](how-to/index.md) for practical workflows

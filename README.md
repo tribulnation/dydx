@@ -5,10 +5,10 @@
 **Use autocomplete instead of documentation.**
 
 ```python
-from dydx import Indexer
+from dydx import DYDX
 
-async with Indexer.new() as indexer:
-  market = await indexer.data.get_market('BTC-USD')
+async with DYDX.new() as dydx:
+  market = await dydx.indexer.data.get_market('BTC-USD')
   print(market['oraclePrice'])
 ```
 
@@ -25,6 +25,7 @@ async with Indexer.new() as indexer:
 
 This package intentionally follows the way dYdX itself is split:
 
+- `DYDX` from `dydx` as the default authenticated entry point when you want both indexer and trading access together
 - `Indexer` from `dydx` for HTTP market/account data and WebSocket streams
 - `PublicNode` from `dydx.node` for public node reads like prices, CLOB pair data, and fee tiers
 - `PrivateNode` from `dydx.node` for signed trading actions like placing and cancelling orders
