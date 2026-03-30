@@ -114,10 +114,11 @@ async with Indexer.new() as indexer:
 Real-time user data comes from the indexer WebSocket API:
 
 ```python
+import os
 from dydx import Indexer
 
 async with Indexer.new() as indexer:
-  stream = await indexer.streams.subaccounts('dydx1039f5sxkl0t39vxcsnmlu62ly22typdap0zkyn', subaccount=0)
+  stream = await indexer.streams.subaccounts(os.environ['DYDX_ADDRESS'], subaccount=0)
   print(stream.reply['subaccount']['equity'])
 ```
 
