@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: typed-dydx
-Version: 0.4.1
+Version: 1.0.0
 Summary: A fully typed, validated async client for the dYdX API.
 Author-email: Marcel Claramunt <marcel@tribulnation.com>
 License-Expression: GPL-3.0-only
@@ -13,6 +13,52 @@ Classifier: Programming Language :: Python :: 3.11
 Classifier: Typing :: Typed
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Requires-Dist: typed-core
 Requires-Dist: v4-proto
 Requires-Dist: dydx-v4-client
+Dynamic: license-file
+
+# Typed dYdX
+
+> A fully typed, validated async client for the dYdX v4 APIs
+
+**Use autocomplete instead of documentation.**
+
+```python
+from dydx import DYDX
+
+async with DYDX.new() as dydx:
+  market = await dydx.indexer.data.get_market('BTC-USD')
+  print(market['oraclePrice'])
+```
+
+## Why Typed dYdX?
+
+- **🎯 Precise Types**: Strong typing throughout, so your editor can help before runtime does.
+- **✅ Automatic Validation**: Catch upstream API changes earlier, where they are easier to debug.
+- **⚡ Async First**: Built for concurrent, network-heavy workflows.
+- **🔒 Safer Usage**: Typed inputs and explicit errors reduce avoidable mistakes.
+- **🎨 Better DX**: Clear routing, sensible defaults, and minimal ceremony.
+- **📦 Practical Extras**: Pagination, streams, and helpers where they actually help.
+
+## Package Shape
+
+This package intentionally follows the way dYdX itself is split:
+
+- `DYDX` from `dydx` as the default authenticated entry point when you want both indexer and trading access together
+- `Indexer` from `dydx` for HTTP market/account data and WebSocket streams
+- `PublicNode` from `dydx.node` for public node reads like prices, CLOB pair data, and fee tiers
+- `PrivateNode` from `dydx.node` for signed trading actions like placing and cancelling orders
+
+`Indexer.data` includes the full documented indexer HTTP read surface, plus a few convenience helpers like `get_market()`, `get_open_position()`, and the `*_paged()` iterators.
+
+## Installation
+
+```bash
+pip install typed-dydx
+```
+
+## Documentation
+
+> [**Read the docs**](https://dydx.tribulnation.com)
