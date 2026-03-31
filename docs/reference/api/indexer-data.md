@@ -248,27 +248,6 @@ HTTP methods exposed under `Indexer.data`.
       show_root_heading: false
       show_root_toc_entry: false
 
-### `get_parent_subaccount_fills`
-
-::: dydx.indexer.data.api.get_parent_subaccount_number_fills.GetParentSubaccountFills.get_parent_subaccount_fills
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
-### `get_parent_subaccount_orders`
-
-::: dydx.indexer.data.api.get_parent_subaccount_number_orders.GetParentSubaccountOrders.get_parent_subaccount_orders
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
-### `get_parent_subaccount_transfers`
-
-::: dydx.indexer.data.api.get_parent_subaccount_number_transfers.GetParentSubaccountTransfers.get_parent_subaccount_transfers
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
 ### `get_parent_transfers`
 
 ::: dydx.indexer.data.api.get_parent_transfers.GetParentTransfers.get_parent_transfers
@@ -293,13 +272,6 @@ HTTP methods exposed under `Indexer.data`.
 ### `list_parent_positions`
 
 ::: dydx.indexer.data.api.list_parent_positions.ListParentPositions.list_parent_positions
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
-### `get_megavault_positions`
-
-::: dydx.indexer.data.api.get_megavault_positions.GetMegavaultPositions.get_megavault_positions
     options:
       show_root_heading: false
       show_root_toc_entry: false

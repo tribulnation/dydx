@@ -5,11 +5,12 @@ from dataclasses import dataclass, field
 from dydx_v4_client.node.client import NodeClient, Builder, SequenceManager, QueryNodeClient
 from dydx_v4_client.key_pair import KeyPair
 from dydx_v4_client.wallet import Wallet
-from dydx_v4_client.network import make_mainnet
+from dydx_v4_client.network import make_mainnet, make_secure, testnet_node
 
-from dydx.indexer import INDEXER_HTTP_URL, INDEXER_WS_URL
+from dydx.indexer import INDEXER_HTTP_URL, INDEXER_WS_URL, INDEXER_TESTNET_HTTP_URL, INDEXER_TESTNET_WS_URL
 
 OEGS_GRPC_URL = 'oegs.dydx.trade:443'
+TESTNET_GRPC_URL = 'test-dydx-grpc.kingnodes.com'
 
 def make_node_client(
   url: str, *, rest_indexer: str = INDEXER_HTTP_URL,
@@ -19,6 +20,21 @@ def make_node_client(
     node_url=url,
     rest_indexer=rest_indexer, 
     websocket_indexer=websocket_indexer, 
+  ).node
+  node = NodeClient(config.channel, Builder(config.chain_id, config.usdc_denom))
+  if node.manage_sequence:
+    node.sequence_manager = SequenceManager(QueryNodeClient(node.channel))
+  return node
+
+def make_testnet_node_client(
+  url: str, *, rest_indexer: str = INDEXER_TESTNET_HTTP_URL,
+  websocket_indexer: str = INDEXER_TESTNET_WS_URL,
+) -> NodeClient:
+  config = make_secure(
+    testnet_node,
+    node_url=url,
+    rest_indexer=rest_indexer,
+    websocket_indexer=websocket_indexer,
   ).node
   node = NodeClient(config.channel, Builder(config.chain_id, config.usdc_denom))
   if node.manage_sequence:
@@ -42,6 +58,16 @@ class PublicNodeMixin:
   ):
     return cls(
       node_client=make_node_client(url, rest_indexer=rest_indexer, websocket_indexer=websocket_indexer),
+    )
+
+  @classmethod
+  def public_testnet(
+    cls, *, url: str = TESTNET_GRPC_URL,
+    rest_indexer: str = INDEXER_TESTNET_HTTP_URL,
+    websocket_indexer: str = INDEXER_TESTNET_WS_URL,
+  ):
+    return cls(
+      node_client=make_testnet_node_client(url, rest_indexer=rest_indexer, websocket_indexer=websocket_indexer),
     )
 
   async def __aenter__(self):
@@ -87,4 +113,15 @@ class PrivateNodeMixin(PublicNodeMixin):
     if mnemonic is None:
       mnemonic = os.environ['DYDX_MNEMONIC']
     node_client = make_node_client(url, rest_indexer=rest_indexer, websocket_indexer=websocket_indexer)
+    return cls(node_client=node_client, mnemonic=mnemonic)
+
+  @classmethod
+  def testnet(
+    cls, mnemonic: str | None = None, *, url: str = TESTNET_GRPC_URL,
+    rest_indexer: str = INDEXER_TESTNET_HTTP_URL,
+    websocket_indexer: str = INDEXER_TESTNET_WS_URL,
+  ):
+    if mnemonic is None:
+      mnemonic = os.environ['DYDX_TESTNET_MNEMONIC']
+    node_client = make_testnet_node_client(url, rest_indexer=rest_indexer, websocket_indexer=websocket_indexer)
     return cls(node_client=node_client, mnemonic=mnemonic)

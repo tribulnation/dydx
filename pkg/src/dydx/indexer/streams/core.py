@@ -11,6 +11,7 @@ from typed_core.ws.streams import Streams, Subscription
 logger = logging.getLogger('dydx.indexer.streams')
 
 INDEXER_WS_URL = 'wss://indexer.dydx.trade/v4/ws'
+INDEXER_TESTNET_WS_URL = 'wss://indexer.v4testnet.dydx.exchange/v4/ws'
 
 class BaseMessage(TypedDict):
   connection_id: str

@@ -1,6 +1,6 @@
 from dataclasses import dataclass as _dataclass, field as _field
-from .data import IndexerData, INDEXER_HTTP_URL
-from .streams import IndexerStreams, INDEXER_WS_URL
+from .data import IndexerData, INDEXER_HTTP_URL, INDEXER_TESTNET_HTTP_URL
+from .streams import IndexerStreams, INDEXER_WS_URL, INDEXER_TESTNET_WS_URL
 
 @_dataclass
 class Indexer:
@@ -9,6 +9,13 @@ class Indexer:
 
   @classmethod
   def new(cls, *, http_url: str = INDEXER_HTTP_URL, ws_url: str = INDEXER_WS_URL, validate: bool = True):
+    return cls(
+      data=IndexerData(url=http_url, default_validate=validate),
+      streams=IndexerStreams.new(url=ws_url, validate=validate),
+    )
+
+  @classmethod
+  def testnet(cls, *, http_url: str = INDEXER_TESTNET_HTTP_URL, ws_url: str = INDEXER_TESTNET_WS_URL, validate: bool = True):
     return cls(
       data=IndexerData(url=http_url, default_validate=validate),
       streams=IndexerStreams.new(url=ws_url, validate=validate),

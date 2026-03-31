@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .core import INDEXER_HTTP_URL
+from .core import INDEXER_HTTP_URL, INDEXER_TESTNET_HTTP_URL
 from .api.get_asset_positions import GetAssetPositions
 from .get_candles_paged import GetCandlesPaged
 from .api.get_compliance_screen import GetComplianceScreen
@@ -12,16 +12,12 @@ from .get_historical_funding_paged import GetHistoricalFundingPaged
 from .api.get_historical_pnl import GetHistoricalPnl
 from .get_market import GetMarket
 from .api.get_megavault_historical_pnl import GetMegavaultHistoricalPnl
-from .api.get_megavault_positions import GetMegavaultPositions
 from .api.get_order import GetOrder
 from .api.get_order_book import GetOrderBook
 from .api.get_parent_asset_positions import GetParentAssetPositions
 from .api.get_parent_fills import GetParentFills
 from .api.get_parent_historical_pnl import GetParentHistoricalPnl
 from .api.get_parent_subaccount import GetParentSubaccount
-from .api.get_parent_subaccount_number_fills import GetParentSubaccountFills
-from .api.get_parent_subaccount_number_orders import GetParentSubaccountOrders
-from .api.get_parent_subaccount_number_transfers import GetParentSubaccountTransfers
 from .api.get_parent_transfers import GetParentTransfers
 from .api.get_rewards import GetRewards
 from .api.get_rewards_aggregated import GetRewardsAggregated
@@ -52,16 +48,12 @@ class IndexerData(
   GetHistoricalPnl,
   GetMarket,
   GetMegavaultHistoricalPnl,
-  GetMegavaultPositions,
   GetOrder,
   GetOrderBook,
   GetParentAssetPositions,
   GetParentFills,
   GetParentHistoricalPnl,
   GetParentSubaccount,
-  GetParentSubaccountFills,
-  GetParentSubaccountOrders,
-  GetParentSubaccountTransfers,
   GetParentTransfers,
   GetRewards,
   GetRewardsAggregated,

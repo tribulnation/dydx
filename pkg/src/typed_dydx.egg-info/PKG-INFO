@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: typed-dydx
-Version: 1.0.0
+Version: 1.0.2
 Summary: A fully typed, validated async client for the dYdX API.
 Author-email: Marcel Claramunt <marcel@tribulnation.com>
 License-Expression: GPL-3.0-only

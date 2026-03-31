@@ -1,7 +1,9 @@
+from typing_extensions import Literal, NotRequired, TypedDict
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
-from typing_extensions import Literal, NotRequired, TypedDict
+
+from dydx.core import timestamp as ts
 from ..core import IndexerMixin, response_parser
 
 class Fill(TypedDict):
@@ -40,6 +42,7 @@ class GetParentFills(IndexerMixin):
     parent_subaccount: int,
     limit: int | None = None,
     created_before_or_at_height: int | None = None,
+    created_before_or_at: datetime | None = None,
     market: str | None = None,
     market_type: Literal['PERPETUAL', 'SPOT'] | None = None,
     validate: bool | None = None
@@ -51,6 +54,7 @@ class GetParentFills(IndexerMixin):
     - `parent_subaccount`: Parent subaccount number.
     - `limit`: Maximum number of results to return.
     - `created_before_or_at_height`: Restrict results to entries created at or before a specific block height.
+    - `created_before_or_at`: Latest timestamp to include.
     - `market`: Ticker filter.
     - `market_type`: Market type filter.
     - `validate`: Whether to validate the response against the generated schema.
@@ -65,6 +69,8 @@ class GetParentFills(IndexerMixin):
       params['limit'] = limit
     if created_before_or_at_height is not None:
       params['createdBeforeOrAtHeight'] = created_before_or_at_height
+    if created_before_or_at is not None:
+      params['createdBeforeOrAt'] = ts.dump(created_before_or_at)
     if market is not None:
       params['market'] = market
     if market_type is not None:

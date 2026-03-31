@@ -18,6 +18,7 @@ def response_parser(type: type[T]):
   return parse_response
 
 INDEXER_HTTP_URL = 'https://indexer.dydx.trade/'
+INDEXER_TESTNET_HTTP_URL = 'https://indexer.v4testnet.dydx.exchange'
 
 @dataclass(kw_only=True)
 class IndexerMixin:

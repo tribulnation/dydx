@@ -29,7 +29,7 @@ pip install typed-dydx
 
 ## Quick Start
 
-The package exposes three entry points because dYdX itself is split across the indexer and node APIs:
+The package exposes four entry points because dYdX itself is split across the indexer and node APIs:
 
 - `DYDX` from `dydx` as the default authenticated entry point for combined read/trade workflows
 - `Indexer` from `dydx` for HTTP market/account data and WebSocket streams
@@ -128,7 +128,7 @@ Current coverage is split across:
 
 - `DYDX` as the default private/authenticated surface
 - `Indexer.data` for markets, order books, candles, trades, fills, transfers, subaccounts, funding, orders, and positions
-- `Indexer.streams` for subaccount updates
+- `Indexer.streams` for subaccounts, parent subaccounts, trades, candles, markets, order book, and block-height updates
 - `PublicNode` for price, CLOB pair, and fee-tier reads
 - `PrivateNode` for placing and cancelling orders
 

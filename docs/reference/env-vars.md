@@ -9,13 +9,15 @@ No environment variables are required for:
 
 ## Private Trading Usage
 
-The only environment variable currently used by the library itself is:
+The library currently reads these environment variables for mnemonic-based trading access:
 
 ```bash
 DYDX_MNEMONIC=
+DYDX_TESTNET_MNEMONIC=
 ```
 
-`DYDX.new()` and `PrivateNode.new()` read `DYDX_MNEMONIC` if you do not pass a mnemonic explicitly.
+- `DYDX.new()` and `PrivateNode.new()` read `DYDX_MNEMONIC` if you do not pass a mnemonic explicitly
+- `PrivateNode.testnet()` reads `DYDX_TESTNET_MNEMONIC` if you do not pass a mnemonic explicitly
 
 ## URLs And Endpoints
 

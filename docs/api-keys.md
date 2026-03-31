@@ -22,6 +22,7 @@ from dydx.node import PublicNode
 
 ```bash
 export DYDX_MNEMONIC="your twelve or twenty-four word mnemonic"
+export DYDX_TESTNET_MNEMONIC="your testnet twelve or twenty-four word mnemonic"
 ```
 
 ```python
@@ -33,6 +34,6 @@ dydx = DYDX.new(mnemonic="your mnemonic here")
 ## Security Notes
 
 - never commit your mnemonic
-- treat `DYDX_MNEMONIC` as a high-sensitivity secret
+- treat `DYDX_MNEMONIC` and `DYDX_TESTNET_MNEMONIC` as high-sensitivity secrets
 - assume `DYDX` and `PrivateNode` examples are mainnet-sensitive unless you change the underlying connection logic
 - keep read-only workflows on `Indexer` or `PublicNode` whenever possible

@@ -1,5 +1,5 @@
 from dataclasses import dataclass as _dataclass
-from .core import OEGS_GRPC_URL
+from .core import OEGS_GRPC_URL, TESTNET_GRPC_URL
 from .private import PrivateNode
 from .public import PublicNode
 

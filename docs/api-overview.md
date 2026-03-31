@@ -1,6 +1,6 @@
 # API Overview
 
-The package exposes three public entry points:
+The package exposes four public entry points:
 
 - `DYDX`
 - `Indexer`
@@ -47,15 +47,12 @@ Implemented HTTP read methods include:
 - `get_historical_funding`, `get_historical_funding_paged`
 - `get_historical_pnl`
 - `get_markets`, `get_market`
-- `get_megavault_historical_pnl`, `get_megavault_positions`
+- `get_megavault_historical_pnl`
 - `get_order`, `get_order_book`
 - `get_parent_asset_positions`
 - `get_parent_fills`
 - `get_parent_historical_pnl`
 - `get_parent_subaccount`
-- `get_parent_subaccount_fills`
-- `get_parent_subaccount_orders`
-- `get_parent_subaccount_transfers`
 - `get_parent_transfers`
 - `get_rewards`, `get_rewards_aggregated`
 - `get_screen`, `get_sparklines`
@@ -118,5 +115,6 @@ Implemented methods:
 - `PublicNode` requires no credentials
 - `DYDX` currently supports mnemonic-based access for `node`
 - `PrivateNode` currently supports mnemonic-based access
+- `PrivateNode.testnet()` reads `DYDX_TESTNET_MNEMONIC` when no mnemonic is passed explicitly
 
 See [Trading Access](api-keys.md) for the current authentication model.

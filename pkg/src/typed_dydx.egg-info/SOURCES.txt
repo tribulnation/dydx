@@ -30,16 +30,12 @@ src/dydx/indexer/data/api/get_historical_funding.py
 src/dydx/indexer/data/api/get_historical_pnl.py
 src/dydx/indexer/data/api/get_markets.py
 src/dydx/indexer/data/api/get_megavault_historical_pnl.py
-src/dydx/indexer/data/api/get_megavault_positions.py
 src/dydx/indexer/data/api/get_order.py
 src/dydx/indexer/data/api/get_order_book.py
 src/dydx/indexer/data/api/get_parent_asset_positions.py
 src/dydx/indexer/data/api/get_parent_fills.py
 src/dydx/indexer/data/api/get_parent_historical_pnl.py
 src/dydx/indexer/data/api/get_parent_subaccount.py
-src/dydx/indexer/data/api/get_parent_subaccount_number_fills.py
-src/dydx/indexer/data/api/get_parent_subaccount_number_orders.py
-src/dydx/indexer/data/api/get_parent_subaccount_number_transfers.py
 src/dydx/indexer/data/api/get_parent_transfers.py
 src/dydx/indexer/data/api/get_rewards.py
 src/dydx/indexer/data/api/get_rewards_aggregated.py

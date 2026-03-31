@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .core import INDEXER_WS_URL
+from .core import INDEXER_WS_URL, INDEXER_TESTNET_WS_URL
 from .api.block_height import BlockHeight
 from .candles import Candles
 from .api.markets import Markets

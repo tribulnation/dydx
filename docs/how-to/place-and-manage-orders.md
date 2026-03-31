@@ -4,7 +4,7 @@ Use `DYDX` by default for trading actions. Reach for `PrivateNode` directly only
 
 ## Connect For Trading
 
-`DYDX.new()` uses `DYDX_MNEMONIC` if you do not pass a mnemonic explicitly.
+`DYDX.new()` uses `DYDX_MNEMONIC` if you do not pass a mnemonic explicitly. For testnet trading with `PrivateNode.testnet()`, the default is `DYDX_TESTNET_MNEMONIC`.
 
 ```python
 from dydx import DYDX
