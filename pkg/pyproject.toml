@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "typed-dydx"
-version = "1.0.2"
+version = "2.0.0"
 authors = [
   {name="Marcel Claramunt", email="marcel@tribulnation.com"}
 ]
-description = "A fully typed, validated async client for the dYdX API."
+description = "A fully typed, validated async client for the dYdX Indexer, Node and CosmosSDK/CometBFT APIs."
 license = "GPL-3.0-only"
 license-files = ["LICENSE"]
 classifiers = [
@@ -18,7 +18,15 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "typed-core", "v4-proto", "dydx-v4-client",
+  "typed-core",
+  "betterproto2==0.9.*",
+  "grpclib",
+  "httpx",
+  "typing-extensions",
+  "bech32",
+  "bip-utils",
+  "coincurve",
+  "pycryptodome",
 ]
 requires-python = ">=3.10"
 readme = {file="README.md", content-type="text/markdown"}

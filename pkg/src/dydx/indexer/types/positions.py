@@ -1,18 +1,22 @@
+"""dYdX indexer position types."""
+
 from typing_extensions import NotRequired, Literal, TypedDict
 from decimal import Decimal
 
 from .enums import PositionSide
 
 PerpetualPositionStatus = Literal['OPEN', 'CLOSED', 'LIQUIDATED']
-"""Perpetual Position Status
+"""Perpetual position status.
 
-> [dYdX API docs](https://docs.dydx.xyz/types/perpetual_position_status)
+References:
+  - [dYdX API docs](https://docs.dydx.xyz/types/perpetual_position_status)
 """
 
 class PerpetualPosition(TypedDict):
-  """Perpetual Position Response Object
+  """Perpetual position response payload.
 
-  > [dYdX API docs](https://docs.dydx.xyz/types/perpetual_position_response_object)
+  References:
+    - [dYdX API docs](https://docs.dydx.xyz/types/perpetual_position_response_object)
   """
   market: str
   status: PerpetualPositionStatus
@@ -32,9 +36,10 @@ class PerpetualPosition(TypedDict):
   subaccountNumber: int
 
 class AssetPosition(TypedDict):
-  """Asset Position Response Object
+  """Asset position response payload.
 
-  > [dYdX API docs](https://docs.dydx.xyz/types/asset_position_response_object)
+  References:
+    - [dYdX API docs](https://docs.dydx.xyz/types/asset_position_response_object)
   """
   size: str
   symbol: str

@@ -1,11 +1,14 @@
+"""dYdX indexer order types."""
+
 from typing_extensions import NotRequired, TypedDict
 
 from .enums import OrderSide, OrderStatus, OrderType, TimeInForce
 
 class OrderState(TypedDict):
-  """Order Response Object
+  """Order response payload.
 
-  > [dYdX API docs](https://docs.dydx.xyz/types/order_response_object)
+  References:
+    - [dYdX API docs](https://docs.dydx.xyz/types/order_response_object)
   """
   id: str
   subaccountId: str

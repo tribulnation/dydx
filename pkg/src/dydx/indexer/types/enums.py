@@ -1,3 +1,5 @@
+"""dYdX indexer enums types and endpoint."""
+
 from typing_extensions import Literal
 
 PositionSide = Literal['LONG', 'SHORT']

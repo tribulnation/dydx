@@ -1,13 +1,16 @@
+"""Grouped WebSocket indexer streams."""
+
 from dataclasses import dataclass
 
 from .core import INDEXER_WS_URL, INDEXER_TESTNET_WS_URL
-from .api.block_height import BlockHeight
+from .block_height import BlockHeight
 from .candles import Candles
-from .api.markets import Markets
-from .api.orders import Orders
+from .markets import Markets
+from .orders import Orders
 from .parent_subaccounts import ParentSubaccounts
 from .subaccounts import Subaccounts
-from .api.trades import Trades
+from .trades import Trades
+
 
 @dataclass
 class IndexerStreams(
@@ -19,4 +22,4 @@ class IndexerStreams(
   Subaccounts,
   Trades,
 ):
-  ...
+  """WebSocket indexer stream endpoint group."""

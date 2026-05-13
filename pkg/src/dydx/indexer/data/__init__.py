@@ -1,39 +1,42 @@
+"""Grouped HTTP indexer data endpoints."""
+
 from dataclasses import dataclass
 
 from .core import INDEXER_HTTP_URL, INDEXER_TESTNET_HTTP_URL
-from .api.get_asset_positions import GetAssetPositions
-from .get_candles_paged import GetCandlesPaged
-from .api.get_compliance_screen import GetComplianceScreen
-from .get_fills_paged import GetFillsPaged
-from .get_funding_payments_paged import GetFundingPaymentsPaged
-from .api.get_funding_payments_for_parent_subaccount import GetFundingPaymentsForParentSubaccount
-from .api.get_height import GetHeight
-from .get_historical_funding_paged import GetHistoricalFundingPaged
-from .api.get_historical_pnl import GetHistoricalPnl
+from .get_asset_positions import GetAssetPositions
+from .get_candles import GetCandlesPaged
+from .get_compliance_screen import GetComplianceScreen
+from .get_fills import GetFillsPaged
+from .get_funding_payments import GetFundingPaymentsPaged
+from .get_funding_payments_for_parent_subaccount import GetFundingPaymentsForParentSubaccount
+from .get_height import GetHeight
+from .get_historical_funding import GetHistoricalFundingPaged
+from .get_historical_pnl import GetHistoricalPnl
 from .get_market import GetMarket
-from .api.get_megavault_historical_pnl import GetMegavaultHistoricalPnl
-from .api.get_order import GetOrder
-from .api.get_order_book import GetOrderBook
-from .api.get_parent_asset_positions import GetParentAssetPositions
-from .api.get_parent_fills import GetParentFills
-from .api.get_parent_historical_pnl import GetParentHistoricalPnl
-from .api.get_parent_subaccount import GetParentSubaccount
-from .api.get_parent_transfers import GetParentTransfers
-from .api.get_rewards import GetRewards
-from .api.get_rewards_aggregated import GetRewardsAggregated
-from .api.get_screen import GetScreen
-from .api.get_sparklines import GetSparklines
-from .api.get_subaccount import GetSubaccount
-from .api.get_subaccounts import GetSubaccounts
-from .api.get_time import GetTime
-from .api.get_trades import GetTrades
-from .get_transfers_paged import GetTransfersPaged
-from .api.get_transfers_between import GetTransfersBetween
-from .api.get_vaults_historical_pnl import GetVaultsHistoricalPnl
-from .api.list_orders import ListOrders
-from .api.list_parent_orders import ListParentOrders
-from .api.list_parent_positions import ListParentPositions
+from .get_megavault_historical_pnl import GetMegavaultHistoricalPnl
+from .get_order import GetOrder
+from .get_order_book import GetOrderBook
+from .get_parent_asset_positions import GetParentAssetPositions
+from .get_parent_fills import GetParentFills
+from .get_parent_historical_pnl import GetParentHistoricalPnl
+from .get_parent_subaccount import GetParentSubaccount
+from .get_parent_transfers import GetParentTransfers
+from .get_rewards import GetRewards
+from .get_rewards_aggregated import GetRewardsAggregated
+from .get_screen import GetScreen
+from .get_sparklines import GetSparklines
+from .get_subaccount import GetSubaccount
+from .get_subaccounts import GetSubaccounts
+from .get_time import GetTime
+from .get_trades import GetTrades
+from .get_transfers import GetTransfersPaged
+from .get_transfers_between import GetTransfersBetween
+from .get_vaults_historical_pnl import GetVaultsHistoricalPnl
+from .list_orders import ListOrders
+from .list_parent_orders import ListParentOrders
+from .list_parent_positions import ListParentPositions
 from .get_open_position import GetOpenPosition
+
 
 @dataclass
 class IndexerData(
@@ -71,4 +74,4 @@ class IndexerData(
   ListParentPositions,
   GetOpenPosition,
 ):
-  ...
+  """HTTP indexer data endpoint group."""

@@ -1,3 +1,5 @@
+"""dYdX indexer market types."""
+
 from typing_extensions import Literal, TypedDict, NotRequired
 from decimal import Decimal
 
@@ -5,14 +7,15 @@ MarketType = Literal['CROSS', 'ISOLATED']
 MarketStatus = Literal['ACTIVE', 'PAUSED', 'CANCEL_ONLY', 'POST_ONLY', 'INITIALIZING', 'FINAL_SETTLEMENT']
 
 class PerpetualMarket(TypedDict):
-  """Perpetual Market Object
+  """Perpetual market payload.
 
-  > [dYdX API docs](https://docs.dydx.xyz/types/perpetual_market)
+  References:
+    - [dYdX API docs](https://docs.dydx.xyz/types/perpetual_market)
   """
   clobPairId: str
   ticker: str
   status: MarketStatus
-  oraclePrice: Decimal
+  oraclePrice: NotRequired[Decimal|None]
   priceChange24H: Decimal
   volume24H: Decimal
   trades24H: int
@@ -27,7 +30,7 @@ class PerpetualMarket(TypedDict):
   stepBaseQuantums: int
   subticksPerTick: int
   marketType: MarketType
-  openInterestLowerCap: NotRequired[Decimal]
-  openInterestUpperCap: NotRequired[Decimal]
+  openInterestLowerCap: NotRequired[Decimal|None]
+  openInterestUpperCap: NotRequired[Decimal|None]
   baseOpenInterest: Decimal
-  defaultFundingRate1H: NotRequired[Decimal]
+  defaultFundingRate1H: NotRequired[Decimal|None]

@@ -1,10 +1,13 @@
+"""dYdX indexer get open position types and endpoint."""
+
 from dataclasses import dataclass
 
-from .api.list_positions import ListPositions, PerpetualPosition
+from .list_positions import ListPositions, PerpetualPosition
 
 
 @dataclass
 class GetOpenPosition(ListPositions):
+  """Endpoint mixin for open_position."""
   async def get_open_position(
     self,
     address: str,
@@ -13,7 +16,17 @@ class GetOpenPosition(ListPositions):
     subaccount: int,
     validate: bool | None = None,
   ) -> PerpetualPosition | None:
-    """Retrieves the open perpetual position for a specific subaccount."""
+    """Fetch one open perpetual position for a subaccount.
+  
+    Args:
+      address: Wallet address.
+      market: Market ticker.
+      subaccount: Subaccount number.
+      validate: Override the client response validation default for this call.
+  
+    Returns:
+      The validated indexer response payload.
+    """
     response = await self.list_positions(
       address,
       subaccount=subaccount,

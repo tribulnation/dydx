@@ -1,8 +1,0 @@
-build
-twine
-ipykernel
-pyright
-zensical
-mkdocstrings-python
-python-dotenv
--e pkg
