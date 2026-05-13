@@ -9,6 +9,9 @@
 ::: dydx.chain.modules.bank
 ::: dydx.chain.modules.bank.all_balances
 ::: dydx.chain.modules.bank.balance
+::: dydx.chain.modules.bank.denom_metadata
+::: dydx.chain.modules.bank.denom_metadata_by_query_string
+::: dydx.chain.modules.bank.denoms_metadata
 ::: dydx.chain.modules.bank.params
 ::: dydx.chain.modules.bank.spendable_balances
 ::: dydx.chain.modules.bank.supply

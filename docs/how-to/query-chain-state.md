@@ -12,7 +12,22 @@ address = 'dydx1...'
 async with Dydx.testnet(public=True) as client:
   account = await client.chain.auth.account(address)
   balances = await client.chain.bank.all_balances(address)
-  print(account, balances)
+  dydx_metadata = await client.chain.bank.denom_metadata('adydx')
+  print(account, balances, dydx_metadata)
+```
+
+List endpoints also expose paged wrappers that use Cosmos continuation keys:
+
+```python
+from dydx import Dydx
+
+address = 'dydx1...'
+
+async with Dydx.testnet(public=True) as client:
+  balances = await client.chain.bank.all_balances_paged(address, limit=100)
+
+  async for page in client.chain.staking.validators_paged(limit=50):
+    print(page)
 ```
 
 dYdX trading state is organized by subaccounts:
