@@ -20,25 +20,18 @@ async with Dydx.testnet(public=True) as client:
   })
 ```
 
-## Package Shape
+## Why Typed dYdX?
 
-- `client.indexer.data`: indexer HTTP reads for markets, orders, fills, transfers, and account history
-- `client.indexer.streams`: indexer WebSocket subscriptions
-- `client.chain`: Cosmos gRPC module queries
-- `client.chain.comet`: CometBFT HTTP RPC reads
-- `client.node`: wallet-aware signing, order placement, cancellation, and transaction helpers
+- **🎯 Precise Types**: Typed endpoint inputs and responses.
+- **✅ Runtime Validation**: Validated responses by default.
+- **⚡ Async First**: Indexer HTTP, WebSocket streams, Cosmos gRPC, Comet RPC, and signed node transactions.
+- **📚 Full dYdX Surface**: Market data, account history, chain state, blocks, transactions, and order placement.
 
 ## Installation
 
 ```bash
 pip install typed-dydx
 ```
-
-## Documentation
-
-- [Wallet Setup](api-keys.md)
-- [How To](how-to/index.md)
-- [Reference](reference/index.md)
 
 ## How To
 
@@ -49,3 +42,10 @@ pip install typed-dydx
 - [Place & Manage Orders](how-to/place-and-manage-orders.md)
 - [Paginate Through Results](how-to/paginate-through-results.md)
 - [Listen To Streams](how-to/listen-to-streams.md)
+
+## Reference
+
+- [Wallet Setup](api-keys.md)
+- [Error Handling](reference/error-handling.md)
+- [Environment Variables](reference/env-vars.md)
+- [Generated API Reference](reference/api/index.md)
