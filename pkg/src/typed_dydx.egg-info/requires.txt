@@ -1,9 +1,0 @@
-typed-core
-betterproto2==0.9.*
-grpclib
-httpx
-typing-extensions
-bech32
-bip-utils
-coincurve
-pycryptodome
