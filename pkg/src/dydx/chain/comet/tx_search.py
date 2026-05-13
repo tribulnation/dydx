@@ -1,5 +1,7 @@
 """Comet transaction search endpoint."""
 
+import json
+
 from pydantic import TypeAdapter
 from typing_extensions import Literal
 
@@ -39,7 +41,7 @@ class TxSearch(CometEndpoint):
     References:
       - [CometBFT RPC docs](https://docs.cosmos.network/cometbft/latest/api-reference/rpc/info/tx_search)
     """
-    params: dict[str, str | bool | int] = {'query': f'"{query}"'}
+    params: dict[str, str | bool | int] = {'query': json.dumps(query)}
     if prove is not None:
       params['prove'] = prove
     if page is not None:
@@ -47,6 +49,5 @@ class TxSearch(CometEndpoint):
     if per_page is not None:
       params['per_page'] = per_page
     if order_by is not None:
-      params['order_by'] = order_by
+      params['order_by'] = json.dumps(order_by)
     return await self.result('/tx_search', params=params, result_adapter=tx_search_adapter, validate=validate)
-
