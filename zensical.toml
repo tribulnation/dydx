@@ -1,6 +1,6 @@
 [project]
 site_name = "Typed dYdX"
-site_description = "Fully typed, validated async clients for the dYdX v4 indexer and node APIs."
+site_description = "Typed async client for dYdX indexer, chain, and node workflows."
 repo_name = "dydx"
 repo_url = "https://github.com/tribulnation/dydx"
 copyright = """
@@ -8,30 +8,39 @@ Copyright &copy; 2026 Tribulnation
 """
 nav = [
   { "Intro" = "index.md" },
-  { "Getting Started" = "getting-started.md" },
-  { "Trading Access" = "api-keys.md" },
-  { "API Overview" = "api-overview.md" },
+  { "Wallet Setup" = "api-keys.md" },
   { "How To" = [
     { "Overview" = "how-to/index.md" },
     "how-to/fetch-market-data.md",
-    "how-to/fetch-balances-and-positions.md",
-    "how-to/fetch-transactions.md",
+    "how-to/manage-account-data.md",
+    "how-to/query-chain-state.md",
+    "how-to/inspect-blocks-and-transactions.md",
     "how-to/place-and-manage-orders.md",
-    "how-to/listen-to-account-updates.md",
-    "how-to/listen-to-public-data.md",
+    "how-to/paginate-through-results.md",
+    "how-to/listen-to-streams.md",
   ] },
   { "Reference" = [
     { "Overview" = "reference/index.md" },
-    "reference/async-usage.md",
     "reference/error-handling.md",
     "reference/env-vars.md",
     { "API" = [
       { "Overview" = "reference/api/index.md" },
-      "reference/api/indexer.md",
-      "reference/api/indexer-data.md",
-      "reference/api/indexer-streams.md",
-      "reference/api/public-node.md",
-      "reference/api/private-node.md",
+      { "Indexer" = [
+        { "Overview" = "reference/api/indexer/index.md" },
+        "reference/api/indexer/data.md",
+        "reference/api/indexer/streams.md",
+      ] },
+      { "Chain" = [
+        { "Overview" = "reference/api/chain/index.md" },
+        "reference/api/chain/modules.md",
+        "reference/api/chain/comet.md",
+      ] },
+      { "Node" = [
+        { "Overview" = "reference/api/node/index.md" },
+        "reference/api/node/orders.md",
+        "reference/api/node/tx.md",
+        "reference/api/node/wallet.md",
+      ] },
     ] },
   ] },
 ]

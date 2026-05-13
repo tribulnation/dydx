@@ -1,0 +1,39 @@
+# Indexer Data
+
+::: dydx.indexer.data
+
+::: dydx.indexer.data.get_asset_positions
+::: dydx.indexer.data.get_candles
+::: dydx.indexer.data.get_compliance_screen
+::: dydx.indexer.data.get_markets
+::: dydx.indexer.data.get_market
+::: dydx.indexer.data.get_fills
+::: dydx.indexer.data.get_funding_payments
+::: dydx.indexer.data.get_funding_payments_for_parent_subaccount
+::: dydx.indexer.data.get_height
+::: dydx.indexer.data.get_historical_funding
+::: dydx.indexer.data.get_historical_pnl
+::: dydx.indexer.data.get_megavault_historical_pnl
+::: dydx.indexer.data.get_open_position
+::: dydx.indexer.data.get_order
+::: dydx.indexer.data.get_order_book
+::: dydx.indexer.data.get_parent_asset_positions
+::: dydx.indexer.data.get_parent_fills
+::: dydx.indexer.data.get_parent_historical_pnl
+::: dydx.indexer.data.get_parent_subaccount
+::: dydx.indexer.data.get_parent_transfers
+::: dydx.indexer.data.get_rewards
+::: dydx.indexer.data.get_rewards_aggregated
+::: dydx.indexer.data.get_screen
+::: dydx.indexer.data.get_sparklines
+::: dydx.indexer.data.get_subaccount
+::: dydx.indexer.data.get_subaccounts
+::: dydx.indexer.data.get_time
+::: dydx.indexer.data.get_trades
+::: dydx.indexer.data.get_transfers
+::: dydx.indexer.data.get_transfers_between
+::: dydx.indexer.data.get_vaults_historical_pnl
+::: dydx.indexer.data.list_orders
+::: dydx.indexer.data.list_parent_orders
+::: dydx.indexer.data.list_parent_positions
+::: dydx.indexer.data.list_positions

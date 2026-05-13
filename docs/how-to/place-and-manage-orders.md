@@ -1,90 +1,59 @@
 # Place & Manage Orders
 
-Use `DYDX` by default for trading actions. Reach for `PrivateNode` directly only if you specifically want the lower-level node wrapper.
-
-## Connect For Trading
-
-`DYDX.new()` uses `DYDX_MNEMONIC` if you do not pass a mnemonic explicitly. For testnet trading with `PrivateNode.testnet()`, the default is `DYDX_TESTNET_MNEMONIC`.
-
-```python
-from dydx import DYDX
-
-dydx = DYDX.new()
-```
-
-## Place An Order
+Use this page for trading or write workflows such as creating orders, replacing orders, cancelling orders, or inspecting open orders.
 
 ```python
 from decimal import Decimal
-from dydx import DYDX
 
-async with DYDX.new() as dydx:
-  market = await dydx.indexer.data.get_market('BTC-USD')
-  response = await dydx.node.place_order(
-  market,
-  {
-    'side': 'BUY',
-    'size': Decimal('0.001'),
-    'price': Decimal('50000'),
-    'flags': 'LONG_TERM',
-    'time_in_force': 'POST_ONLY',
-  },
+from dydx import Dydx
+
+async with Dydx.testnet('your testnet mnemonic') as client:
+  market = await client.indexer.data.get_market('ETH-USD')
+  placed = await client.node.place_order(
+    market,
+    order={
+      'side': 'BUY',
+      'size': Decimal('0.001'),
+      'price': Decimal('1'),
+      'flags': 'LONG_TERM',
+      'time_in_force': 'POST_ONLY',
+    },
+    simulate=True,
   )
-
-  print(response['tx'].tx_response.code)
+  print(placed.order.order_id)
 ```
 
-## Cancel An Order
+Long-term and conditional orders can be placed together in one transaction:
 
 ```python
-from decimal import Decimal
-from dydx import DYDX
-
-async with DYDX.new() as dydx:
-  market = await dydx.indexer.data.get_market('BTC-USD')
-  placed = await dydx.node.place_order(
-  market,
-  {
-    'side': 'BUY',
-    'size': Decimal('0.001'),
-    'price': Decimal('50000'),
-    'flags': 'LONG_TERM',
-    'time_in_force': 'POST_ONLY',
-  },
-  )
-
-async with DYDX.new() as dydx:
-  response = await dydx.node.cancel_order(placed['order'].order_id)
-  print(response.tx_response.code)
+async with Dydx.testnet('your testnet mnemonic') as client:
+  market = await client.indexer.data.get_market('ETH-USD')
+  placed = await client.node.place_orders([
+    {
+      'market': market,
+      'order': {
+        'side': 'BUY',
+        'size': '0.001',
+        'price': '1',
+        'flags': 'LONG_TERM',
+        'time_in_force': 'POST_ONLY',
+      },
+    },
+    {
+      'market': market,
+      'order': {
+        'side': 'SELL',
+        'size': '0.001',
+        'price': '100000',
+        'flags': 'LONG_TERM',
+        'time_in_force': 'POST_ONLY',
+      },
+    },
+  ])
+  print([order.order_id for order in placed.orders])
 ```
 
-## Cancel Multiple Orders
+Short-term orders cannot be batched this way because dYdX rejects transactions
+containing more than one short-term `MsgPlaceOrder`.
 
-```python
-from decimal import Decimal
-from dydx import DYDX
-
-async with DYDX.new() as dydx:
-  market = await dydx.indexer.data.get_market('BTC-USD')
-  first = await dydx.node.place_order(
-  market,
-  {
-    'side': 'SELL',
-    'size': Decimal('0.001'),
-    'price': Decimal('200000'),
-    'flags': 'SHORT_TERM',
-  },
-  )
-  second = await dydx.node.place_order(
-  market,
-  {
-    'side': 'SELL',
-    'size': Decimal('0.001'),
-    'price': Decimal('200000'),
-    'flags': 'SHORT_TERM',
-  },
-  )
-
-  response = await dydx.node.batch_cancel_orders([first['order'].order_id, second['order'].order_id])
-  print(response.tx_response.code)
-```
+Document required permissions, signing behavior, idempotency keys, order identifiers, and whether examples are safe for testnet or sandbox usage.

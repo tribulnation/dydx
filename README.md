@@ -1,36 +1,32 @@
 # Typed dYdX
 
-> A fully typed, validated async client for the dYdX v4 APIs
-
-**Use autocomplete instead of documentation.**
+> A fully typed, validated async client for the dYdX Indexer, Node and CosmosSDK/CometBFT APIs.
 
 ```python
-from dydx import DYDX
+from dydx import Dydx
 
-async with DYDX.new() as dydx:
-  market = await dydx.indexer.data.get_market('BTC-USD')
+async with Dydx.testnet(public=True) as client:
+  market = await client.indexer.data.get_market('BTC-USD')
+  stream = await client.indexer.streams.markets()
+  balances = await client.chain.bank.all_balances('dydx1...')
+  block = await client.chain.comet.block()
+  clob_pairs = await client.node.public.get_clob_pairs()
+
   print(market['oraclePrice'])
+  print(stream.reply['markets']['BTC-USD']['oraclePrice'])
+  print(balances)
+  print(block['block']['header']['height'])
+  print(clob_pairs)
+  await stream.unsubscribe()
 ```
-
-## Why Typed dYdX?
-
-- **🎯 Precise Types**: Strong typing throughout, so your editor can help before runtime does.
-- **✅ Automatic Validation**: Catch upstream API changes earlier, where they are easier to debug.
-- **⚡ Async First**: Built for concurrent, network-heavy workflows.
-- **🔒 Safer Usage**: Typed inputs and explicit errors reduce avoidable mistakes.
-- **🎨 Better DX**: Clear routing, sensible defaults, and minimal ceremony.
-- **📦 Practical Extras**: Pagination, streams, and helpers where they actually help.
 
 ## Package Shape
 
-This package intentionally follows the way dYdX itself is split:
-
-- `DYDX` from `dydx` as the default authenticated entry point when you want both indexer and trading access together
-- `Indexer` from `dydx` for HTTP market/account data and WebSocket streams
-- `PublicNode` from `dydx.node` for public node reads like prices, CLOB pair data, and fee tiers
-- `PrivateNode` from `dydx.node` for signed trading actions like placing and cancelling orders
-
-`Indexer.data` includes the full documented indexer HTTP read surface, plus a few convenience helpers like `get_market()`, `get_open_position()`, and the `*_paged()` iterators.
+- `client.indexer.data`: indexer HTTP reads for markets, orders, fills, transfers, and account history
+- `client.indexer.streams`: indexer WebSocket subscriptions
+- `client.chain`: Cosmos gRPC module queries for balances, CLOB metadata, prices, subaccounts, staking, and transactions
+- `client.chain.comet`: CometBFT HTTP RPC reads for blocks, transaction lookup, and transaction search
+- `client.node`: wallet-aware signing, order placement, cancellation, and transaction helpers
 
 ## Installation
 
@@ -40,4 +36,10 @@ pip install typed-dydx
 
 ## Documentation
 
-> [**Read the docs**](https://dydx.tribulnation.com)
+- [Wallet Setup](https://dydx.tribulnation.com/api-keys/)
+- [How To](https://dydx.tribulnation.com/how-to/)
+- [Reference](https://dydx.tribulnation.com/reference/)
+
+## Source Code
+
+> [github.com/tribulnation/dydx](https://github.com/tribulnation/dydx)

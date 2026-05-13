@@ -1,25 +1,29 @@
 # Error Handling
 
-The main error types in this package are:
+Typed Clients should distinguish between failure modes clearly.
 
-- `NetworkError` for HTTP or WebSocket transport failures
-- `ValidationError` for schema mismatches
-- `ApiError` for indexer or node-level API failures
-- `LogicError` for invalid local usage or SDK-side assumptions
-- `BadRequest` for invalid request shapes caught by the client or API
+## Common Error Categories
+
+- `NetworkError`: connection failures, timeouts, transport errors
+- `AuthError`: missing credentials, invalid signatures, rejected authentication
+- `BadRequest`: invalid request parameters or malformed payloads rejected locally or remotely
+- `RateLimited`: provider-side rate limiting
+- `ApiError`: the remote API returned an application-level error
+- `ValidationError`: the response shape did not match the expected schema
+- `LogicError`: incorrect local usage of the client
 
 ## Recommended Pattern
 
 ```python
-from typed_core.exceptions import ApiError, BadRequest, LogicError, NetworkError, ValidationError
+from dydx.core import ApiError, AuthError, NetworkError, RateLimited, ValidationError
 
 try:
   ...
 except ValidationError:
   ...
-except BadRequest:
+except AuthError:
   ...
-except LogicError:
+except RateLimited:
   ...
 except ApiError:
   ...
@@ -27,8 +31,10 @@ except NetworkError:
   ...
 ```
 
-## Notes
+## Operational Guidance
 
-- indexer HTTP failures are wrapped as `ApiError(status, result)`
-- node gRPC failures are also normalized into `ApiError`
-- `batch_cancel_orders` may raise `BadRequest` for unsupported order shapes, such as non-short-term batch cancels
+- retry transient network failures carefully
+- do not blindly retry authentication failures
+- back off on rate limits according to the provider's documented policy
+- log validation failures because they often signal upstream API changes
+- include request identifiers from the provider when available

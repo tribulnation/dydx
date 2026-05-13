@@ -1,39 +1,52 @@
-# Trading Access
+# Wallet Setup
 
-For dYdX, the important distinction is not public vs API-key access. It is indexer vs node access.
+dYdX node write workflows use a Cosmos wallet mnemonic for signing
+transactions. Public indexer and chain reads do not require credentials.
 
-## Public Usage
+## Environment Variables
 
-No credentials are required for:
-
-- `Indexer`
-- `PublicNode`
-
-Use these imports for public/read-only workflows:
-
-```python
-from dydx import Indexer
-from dydx.node import PublicNode
-```
-
-## Private Trading Setup
-
-`DYDX` and `PrivateNode` currently use mnemonic-based access.
+The recommended setup is an environment variable:
 
 ```bash
-export DYDX_MNEMONIC="your twelve or twenty-four word mnemonic"
-export DYDX_TESTNET_MNEMONIC="your testnet twelve or twenty-four word mnemonic"
+export DYDX_MNEMONIC='your wallet mnemonic'
+export DYDX_TESTNET_MNEMONIC='your testnet wallet mnemonic'
 ```
+
+Public indexer and chain queries can run without a wallet by passing
+`public=True`.
+
+## Direct Usage
+
+You can also pass the mnemonic directly:
 
 ```python
-from dydx import DYDX
+from dydx import Dydx
 
-dydx = DYDX.new(mnemonic="your mnemonic here")
+async with Dydx.testnet('your testnet mnemonic') as client:
+  await client.node.refresh_wallet()
+  print(client.node.wallet.address)
 ```
+
+When a mnemonic is omitted, mainnet constructors read `DYDX_MNEMONIC` and
+testnet constructors read `DYDX_TESTNET_MNEMONIC`.
+
+## Write Workflows
+
+Order placement, cancellation, and raw transaction signing require a wallet.
+Use `simulate=True` while validating order flows against testnet.
 
 ## Security Notes
 
-- never commit your mnemonic
-- treat `DYDX_MNEMONIC` and `DYDX_TESTNET_MNEMONIC` as high-sensitivity secrets
-- assume `DYDX` and `PrivateNode` examples are mainnet-sensitive unless you change the underlying connection logic
-- keep read-only workflows on `Indexer` or `PublicNode` whenever possible
+- never commit credentials to git
+- prefer `public=True` for read-only scripts
+- use a separate testnet wallet for development
+- simulate new transaction flows before broadcasting
+- rotate credentials after any suspected leak
+
+## Troubleshooting
+
+If authenticated requests fail:
+
+- confirm the mnemonic belongs to a funded dYdX account
+- confirm your environment variables are loaded
+- check [Error Handling](reference/error-handling.md) for the client error model

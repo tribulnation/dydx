@@ -1,13 +1,15 @@
-# Overview
+# API Reference
 
-This section documents the Python package reference surface.
+The API reference is nested by package module so the docs mirror the public
+client surface.
 
-## Pages
+## Sections
 
-- [Indexer](indexer.md)
-- [IndexerData](indexer-data.md)
-- [IndexerStreams](indexer-streams.md)
-- [PublicNode](public-node.md)
-- [PrivateNode](private-node.md)
+- [Top-level Package](#top-level-package)
+- [Indexer](indexer/index.md)
+- [Chain](chain/index.md)
+- [Node](node/index.md)
 
-The pages below document the concrete public surfaces that traders actually use.
+## Top-level Package
+
+::: dydx
