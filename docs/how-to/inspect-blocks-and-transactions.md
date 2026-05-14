@@ -44,12 +44,12 @@ Use Comet transaction search when you need event-based history:
 from dydx import Dydx
 
 async with Dydx.testnet(public=True) as client:
-  results = await client.chain.comet.tx_search(
+  txs = await client.chain.comet.tx_search_paged(
     'message.sender=\'dydx1...\'',
-    page=1,
     per_page=25,
+    order_by='asc',
   )
-  print(results['txs'])
+  print(txs)
 ```
 
 For historical backfills, prefer archive constructors such as
