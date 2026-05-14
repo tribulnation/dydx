@@ -9,7 +9,7 @@ async with Dydx.testnet(public=True) as client:
   market = await client.indexer.data.get_market('BTC-USD')
   stream = await client.indexer.streams.candles('ETH-USD', resolution='1MIN')
   async for candle in stream:
-    ...
+    await stream.unsubscribe()
   balances = await client.chain.bank.all_balances('dydx1...')
   block = await client.chain.comet.block()
   result = await client.node.place_order(market, order={
