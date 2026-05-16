@@ -217,8 +217,8 @@ class CommitSignature(TypedDict):
   """Consensus address of the signing validator."""
   timestamp: datetime
   """Signature timestamp."""
-  signature: str
-  """Base64-encoded validator signature."""
+  signature: str | None
+  """Base64-encoded validator signature, or null when the validator did not sign."""
 
 
 class Commit(TypedDict):

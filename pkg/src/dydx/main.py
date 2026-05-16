@@ -34,8 +34,8 @@ class Dydx:
     cls,
     mnemonic: str | None = None,
     *,
-    indexer: Indexer,
-    chain: Chain,
+    indexer: Indexer | None = None,
+    chain: Chain | None = None,
     public: bool = False,
     chain_id: str = DYDX_MAINNET_CHAIN_ID,
     usdc_denom: str = DYDX_MAINNET_USDC_DENOM,
@@ -57,6 +57,8 @@ class Dydx:
     Returns:
       A composed dYdX client with shared chain transport.
     """
+    indexer = indexer or Indexer()
+    chain = chain or Chain()
     return cls(
       indexer=indexer,
       chain=chain,
