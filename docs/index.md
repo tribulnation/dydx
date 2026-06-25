@@ -48,4 +48,3 @@ pip install typed-dydx
 - [Wallet Setup](api-keys.md)
 - [Error Handling](reference/error-handling.md)
 - [Environment Variables](reference/env-vars.md)
-- [Generated API Reference](reference/api/index.md)

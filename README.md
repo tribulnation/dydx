@@ -80,4 +80,3 @@ pip install typed-dydx
 - [Wallet Setup](https://dydx.tribulnation.com/api-keys/)
 - [Error Handling](https://dydx.tribulnation.com/reference/error-handling/)
 - [Environment Variables](https://dydx.tribulnation.com/reference/env-vars/)
-- [Generated API Reference](https://dydx.tribulnation.com/reference/api/)

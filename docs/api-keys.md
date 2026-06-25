@@ -3,6 +3,11 @@
 dYdX node write workflows use a Cosmos wallet mnemonic for signing
 transactions. Public indexer and chain reads do not require credentials.
 
+You can export your secret mnemonic from the [dYdX website](https://dydx.trade/):
+
+![How to export your secret phrase from dYdX](media/export_secret_phrase.png)
+
+
 ## Environment Variables
 
 The recommended setup is an environment variable:

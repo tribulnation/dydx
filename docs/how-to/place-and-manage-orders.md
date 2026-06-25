@@ -55,5 +55,3 @@ async with Dydx.testnet('your testnet mnemonic') as client:
 
 Short-term orders cannot be batched this way because dYdX rejects transactions
 containing more than one short-term `MsgPlaceOrder`.
-
-Document required permissions, signing behavior, idempotency keys, order identifiers, and whether examples are safe for testnet or sandbox usage.
