@@ -10,6 +10,7 @@ from dydx.chain.modules.bank import Bank
 from dydx.chain.modules.clob import Clob
 from dydx.chain.modules.distribution import Distribution
 from dydx.chain.modules.feetiers import Feetiers
+from dydx.chain.modules.gov import Gov
 from dydx.chain.modules.perpetuals import Perpetuals
 from dydx.chain.modules.prices import Prices
 from dydx.chain.modules.revshare import Revshare
@@ -83,7 +84,8 @@ class Modules(GrpcRouter):
   rewards: Rewards
   affiliates: Affiliates
   revshare: Revshare
-
+  gov: Gov
+  
   @classmethod
   def new(cls, host: str, **kwargs: Unpack[GrpcOptions]) -> Self:
     """Create module groups for a custom gRPC endpoint."""

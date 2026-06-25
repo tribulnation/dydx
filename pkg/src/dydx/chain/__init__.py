@@ -50,6 +50,7 @@ from dydx.chain.modules.bank import Bank
 from dydx.chain.modules.clob import Clob
 from dydx.chain.modules.distribution import Distribution
 from dydx.chain.modules.feetiers import Feetiers
+from dydx.chain.modules.gov import Gov
 from dydx.chain.modules.perpetuals import Perpetuals
 from dydx.chain.modules.prices import Prices
 from dydx.chain.modules.revshare import Revshare
@@ -248,6 +249,11 @@ class Chain:
   def revshare(self) -> Revshare:
     """Return dYdX revenue-share queries."""
     return self.modules.revshare
+
+  @property
+  def gov(self) -> Gov:
+    """Return dYdX governance queries."""
+    return self.modules.gov
 
   async def __aenter__(self) -> Self:
     """Enter the chain client context."""

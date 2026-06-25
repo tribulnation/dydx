@@ -2,8 +2,15 @@
 
 from dydx.chain.core import GrpcEndpoint
 from dydx.chain.modules.staking.delegator_delegations import DelegatorDelegations
+from dydx.chain.modules.staking.delegator_unbonding_delegations import DelegatorUnbondingDelegations
 from dydx.chain.modules.staking.pool import Pool
 from dydx.chain.modules.staking.validators import Validators
 
-class Staking(DelegatorDelegations, Pool, Validators, GrpcEndpoint):
+class Staking(
+  DelegatorDelegations,
+  DelegatorUnbondingDelegations,
+  Pool,
+  Validators,
+  GrpcEndpoint,
+):
   """Cosmos staking query group."""
