@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "typed-dydx"
-version = "2.0.8"
+version = "2.0.9"
 authors = [
   {name="Marcel Claramunt", email="marcel@tribulnation.com"}
 ]
 description = "A fully typed, validated async client for the dYdX Indexer, Node and CosmosSDK/CometBFT APIs."
-license = "GPL-3.0-only"
+license = "MIT"
 license-files = ["LICENSE"]
 classifiers = [
   "Programming Language :: Python :: 3",
