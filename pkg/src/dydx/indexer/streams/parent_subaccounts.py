@@ -6,7 +6,7 @@ from datetime import datetime
 from decimal import Decimal
 import pydantic
 
-from typed_core.util import Stream
+from typed_core.util import Stream, StreamManager
 from .core import StreamsMixin, Unsubscribed
 
 class Account(TypedDict):
@@ -211,12 +211,12 @@ notification_adapter = pydantic.TypeAdapter(Notification)
 @dataclass
 class ParentSubaccounts(StreamsMixin):
   """ParentSubaccounts payload."""
-  async def parent_subaccounts(
+  def parent_subaccounts(
     self, address: str, *,
     subaccount: int,
     validate: bool | None = None,
     batched: bool = True,
-  ) -> Stream[Notification, Reply, Unsubscribed]:
+  ) -> StreamManager[Notification, Reply, Unsubscribed]:
     """Subscribe to parent subaccount updates.
   
     Args:
@@ -228,15 +228,15 @@ class ParentSubaccounts(StreamsMixin):
     Returns:
       A typed stream containing the subscription snapshot, update iterator, and unsubscribe callback.
     """
-    return await self.raw_parent_subaccounts(
+    return self.raw_parent_subaccounts(
       id=f'{address}/{subaccount}',
       batched=batched,
       validate=validate,
     )
 
-  async def raw_parent_subaccounts(
+  def raw_parent_subaccounts(
     self, *, id: str, batched: bool = True, validate: bool | None = None,
-  ) -> Stream[Notification, Reply, Unsubscribed]:
+  ) -> StreamManager[Notification, Reply, Unsubscribed]:
     """Subscribe to parent subaccount updates by raw channel id.
   
     Args:
@@ -250,6 +250,13 @@ class ParentSubaccounts(StreamsMixin):
     References:
       - [dYdX API docs](https://docs.dydx.xyz/indexer-client/websockets#parent-subaccounts)
     """
+    return StreamManager(
+      lambda: self._raw_parent_subaccounts_impl(id=id, batched=batched, validate=validate)
+    )
+
+  async def _raw_parent_subaccounts_impl(
+    self, *, id: str, batched: bool = True, validate: bool | None = None,
+  ) -> Stream[Notification, Reply, Unsubscribed]:
     stream = await self.client.subscribe(f'v4_parent_subaccounts:{id}', {'batched': batched})
 
     async def parsed_stream() -> AsyncIterable[Notification]:

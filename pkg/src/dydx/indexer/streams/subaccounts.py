@@ -6,7 +6,7 @@ from datetime import datetime
 from decimal import Decimal
 import pydantic
 
-from typed_core.util import Stream
+from typed_core.util import Stream, StreamManager
 from .core import StreamsMixin, Unsubscribed
 
 class Account(TypedDict):
@@ -203,12 +203,12 @@ notification_adapter = pydantic.TypeAdapter(Notification)
 @dataclass
 class Subaccounts(StreamsMixin):
   """Subaccounts payload."""
-  async def subaccounts(
+  def subaccounts(
     self, address: str, *,
     subaccount: int,
     validate: bool | None = None,
     batched: bool = True,
-  ) -> Stream[Notification, Reply, Unsubscribed]:
+  ) -> StreamManager[Notification, Reply, Unsubscribed]:
     """Subscribe to subaccount updates.
   
     Args:
@@ -220,15 +220,15 @@ class Subaccounts(StreamsMixin):
     Returns:
       A typed stream containing the subscription snapshot, update iterator, and unsubscribe callback.
     """
-    return await self.raw_subaccounts(
+    return self.raw_subaccounts(
       id=f'{address}/{subaccount}',
       batched=batched,
       validate=validate,
     )
 
-  async def raw_subaccounts(
+  def raw_subaccounts(
     self, *, id: str, batched: bool = True, validate: bool | None = None,
-  ) -> Stream[Notification, Reply, Unsubscribed]:
+  ) -> StreamManager[Notification, Reply, Unsubscribed]:
     """Subscribe to subaccount updates by raw channel id.
   
     Args:
@@ -242,6 +242,11 @@ class Subaccounts(StreamsMixin):
     References:
       - [dYdX API docs](https://docs.dydx.xyz/indexer-client/websockets#subaccounts)
     """
+    return StreamManager(lambda: self._raw_subaccounts_impl(id=id, batched=batched, validate=validate))
+
+  async def _raw_subaccounts_impl(
+    self, *, id: str, batched: bool = True, validate: bool | None = None,
+  ) -> Stream[Notification, Reply, Unsubscribed]:
     stream = await self.client.subscribe(f'v4_subaccounts:{id}', {'batched': batched})
 
     async def parsed_stream() -> AsyncIterable[Notification]:

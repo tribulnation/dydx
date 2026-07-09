@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "typed-dydx"
-version = "2.0.9"
+version = "2.1.0"
 authors = [
   {name="Marcel Claramunt", email="marcel@tribulnation.com"}
 ]
@@ -18,7 +18,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "typed-core",
+  "typed-core>=0.2.0",
   "betterproto2==0.9.*",
   "grpclib",
   "httpx",

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 import pydantic
 
-from typed_core.util import Stream
+from typed_core.util import Stream, StreamManager
 from .core import StreamsMixin, Unsubscribed
 
 class BookEntry(TypedDict):
@@ -34,9 +34,9 @@ notification_adapter = pydantic.TypeAdapter(Notification)
 @dataclass
 class Orders(StreamsMixin):
   """Orders payload."""
-  async def orders(
+  def orders(
     self, *, id: str, batched: bool = True, validate: bool | None = None,
-  ) -> Stream[Notification, Reply, Unsubscribed]:
+  ) -> StreamManager[Notification, Reply, Unsubscribed]:
     """Subscribe to order book updates for a market.
   
     Args:
@@ -50,6 +50,11 @@ class Orders(StreamsMixin):
     References:
       - [dYdX API docs](https://docs.dydx.xyz/indexer-client/websockets#orders)
     """
+    return StreamManager(lambda: self._orders_impl(id=id, batched=batched, validate=validate))
+
+  async def _orders_impl(
+    self, *, id: str, batched: bool = True, validate: bool | None = None,
+  ) -> Stream[Notification, Reply, Unsubscribed]:
     stream = await self.client.subscribe(f'v4_orderbook:{id}', {'batched': batched})
 
     async def parsed_stream() -> AsyncIterable[Notification]:
@@ -63,4 +68,3 @@ class Orders(StreamsMixin):
     c = stream.reply['contents']
     reply: Reply = reply_adapter.validate_python(c) if self.validate(validate) else c
     return Stream(reply, parsed_stream(), stream.unsubscribe)
-

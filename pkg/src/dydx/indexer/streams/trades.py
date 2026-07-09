@@ -6,7 +6,7 @@ from datetime import datetime
 from decimal import Decimal
 import pydantic
 
-from typed_core.util import Stream
+from typed_core.util import Stream, StreamManager
 from .core import StreamsMixin, Unsubscribed
 
 class Trade(TypedDict):
@@ -42,9 +42,9 @@ notification_adapter = pydantic.TypeAdapter(Notification)
 @dataclass
 class Trades(StreamsMixin):
   """Trades payload."""
-  async def trades(
+  def trades(
     self, *, id: str, batched: bool = True, validate: bool | None = None,
-  ) -> Stream[Notification, Reply, Unsubscribed]:
+  ) -> StreamManager[Notification, Reply, Unsubscribed]:
     """Subscribe to trade updates for a market.
   
     Args:
@@ -58,6 +58,11 @@ class Trades(StreamsMixin):
     References:
       - [dYdX API docs](https://docs.dydx.xyz/indexer-client/websockets#trades)
     """
+    return StreamManager(lambda: self._trades_impl(id=id, batched=batched, validate=validate))
+
+  async def _trades_impl(
+    self, *, id: str, batched: bool = True, validate: bool | None = None,
+  ) -> Stream[Notification, Reply, Unsubscribed]:
     stream = await self.client.subscribe(f'v4_trades:{id}', {'batched': batched})
 
     async def parsed_stream() -> AsyncIterable[Notification]:
@@ -71,4 +76,3 @@ class Trades(StreamsMixin):
     c = stream.reply['contents']
     reply: Reply = reply_adapter.validate_python(c) if self.validate(validate) else c
     return Stream(reply, parsed_stream(), stream.unsubscribe)
-

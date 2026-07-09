@@ -6,7 +6,7 @@ from datetime import datetime
 from decimal import Decimal
 import pydantic
 
-from typed_core.util import Stream
+from typed_core.util import Stream, StreamManager
 from .core import StreamsMixin, Unsubscribed
 
 Resolution = Literal['1MIN', '5MINS', '15MINS', '30MINS', '1HOUR', '4HOURS', '1DAY']
@@ -53,14 +53,14 @@ notification_adapter = pydantic.TypeAdapter(Notification)
 @dataclass
 class Candles(StreamsMixin):
   """Candles payload."""
-  async def candles(
+  def candles(
     self,
     market: str,
     *,
     resolution: Resolution,
     validate: bool | None = None,
     batched: bool = True,
-  ) -> Stream[Notification, Reply, Unsubscribed]:
+  ) -> StreamManager[Notification, Reply, Unsubscribed]:
     """Subscribe to candle updates by market and resolution.
   
     Args:
@@ -72,15 +72,15 @@ class Candles(StreamsMixin):
     Returns:
       A typed stream containing the subscription snapshot, update iterator, and unsubscribe callback.
     """
-    return await self.raw_candles(
+    return self.raw_candles(
       id=f'{market}/{resolution}',
       batched=batched,
       validate=validate,
     )
 
-  async def raw_candles(
+  def raw_candles(
     self, *, id: str, batched: bool = True, validate: bool | None = None,
-  ) -> Stream[Notification, Reply, Unsubscribed]:
+  ) -> StreamManager[Notification, Reply, Unsubscribed]:
     """Subscribe to candle updates by raw channel id.
   
     Args:
@@ -94,6 +94,11 @@ class Candles(StreamsMixin):
     References:
       - [dYdX API docs](https://docs.dydx.xyz/indexer-client/websockets#candles)
     """
+    return StreamManager(lambda: self._raw_candles_impl(id=id, batched=batched, validate=validate))
+
+  async def _raw_candles_impl(
+    self, *, id: str, batched: bool = True, validate: bool | None = None,
+  ) -> Stream[Notification, Reply, Unsubscribed]:
     stream = await self.client.subscribe(f'v4_candles:{id}', {'batched': batched})
 
     async def parsed_stream() -> AsyncIterable[Notification]:

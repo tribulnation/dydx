@@ -6,7 +6,7 @@ from datetime import datetime
 from decimal import Decimal
 import pydantic
 
-from typed_core.util import Stream
+from typed_core.util import Stream, StreamManager
 from .core import StreamsMixin, Unsubscribed
 
 class OraclePriceMarket(TypedDict):
@@ -85,9 +85,9 @@ notification_adapter = pydantic.TypeAdapter(Notification)
 @dataclass
 class Markets(StreamsMixin):
   """Markets payload."""
-  async def markets(
+  def markets(
     self, *, batched: bool = True, validate: bool | None = None,
-  ) -> Stream[Notification, Reply, Unsubscribed]:
+  ) -> StreamManager[Notification, Reply, Unsubscribed]:
     """Subscribe to market metadata updates.
   
     Args:
@@ -100,6 +100,11 @@ class Markets(StreamsMixin):
     References:
       - [dYdX API docs](https://docs.dydx.xyz/indexer-client/websockets#markets)
     """
+    return StreamManager(lambda: self._markets_impl(batched=batched, validate=validate))
+
+  async def _markets_impl(
+    self, *, batched: bool = True, validate: bool | None = None,
+  ) -> Stream[Notification, Reply, Unsubscribed]:
     stream = await self.client.subscribe('v4_markets', {'batched': batched})
 
     async def parsed_stream() -> AsyncIterable[Notification]:
@@ -113,4 +118,3 @@ class Markets(StreamsMixin):
     c = stream.reply['contents']
     reply: Reply = reply_adapter.validate_python(c) if self.validate(validate) else c
     return Stream(reply, parsed_stream(), stream.unsubscribe)
-
