@@ -2,7 +2,7 @@
 
 from typed_core import PaginatedResponse
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.chain.pagination import next_key, page_request
 from dydx.protos.cosmos.base.query import v1beta1 as query_proto
 from dydx.protos.dydxprotocol import prices as prices_proto
@@ -10,6 +10,7 @@ from dydx.protos.dydxprotocol import prices as prices_proto
 class MarketPrices(GrpcEndpoint):
   """Market prices endpoint."""
 
+  @wrap_exceptions
   async def market_prices(
     self, *, pagination: query_proto.PageRequest | None = None,
   ) -> prices_proto.QueryAllMarketPricesResponse:

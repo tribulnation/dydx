@@ -1,11 +1,12 @@
 """dYdX collateral pool address query."""
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.protos.dydxprotocol import subaccounts as subaccounts_proto
 
 class CollateralPoolAddress(GrpcEndpoint):
   """Collateral pool address endpoint."""
 
+  @wrap_exceptions
   async def collateral_pool_address(self, perpetual_id: int) -> subaccounts_proto.QueryCollateralPoolAddressResponse:
     """Query the collateral pool address for a perpetual."""
     return await subaccounts_proto.QueryStub(self.channel).collateral_pool_address(

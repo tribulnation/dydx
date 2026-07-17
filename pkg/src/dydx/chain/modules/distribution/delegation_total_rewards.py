@@ -1,11 +1,12 @@
 """Cosmos distribution delegation total rewards query."""
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.protos.cosmos.distribution import v1beta1 as distribution_proto
 
 class DelegationTotalRewards(GrpcEndpoint):
   """Delegation total rewards endpoint."""
 
+  @wrap_exceptions
   async def delegation_total_rewards(self, delegator_address: str) -> distribution_proto.QueryDelegationTotalRewardsResponse:
     """Query total rewards for a delegator."""
     return await distribution_proto.QueryStub(self.channel).delegation_total_rewards(

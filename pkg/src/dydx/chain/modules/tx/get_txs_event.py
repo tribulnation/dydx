@@ -2,7 +2,7 @@
 
 from typed_core import PaginatedResponse
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.chain.pagination import next_key, page_request
 from dydx.protos.cosmos.base.query import v1beta1 as query_proto
 from dydx.protos.cosmos.base.abci import v1beta1 as abci_proto
@@ -12,6 +12,7 @@ from dydx.protos.cosmos.tx.v1beta1 import OrderBy
 class GetTxsEvent(GrpcEndpoint):
   """Transaction event search endpoint."""
 
+  @wrap_exceptions
   async def get_txs_event(
     self,
     query: str | None = None, *,

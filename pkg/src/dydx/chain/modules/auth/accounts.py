@@ -2,7 +2,7 @@
 
 from typed_core import PaginatedResponse
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.chain.pagination import next_key, page_request
 from dydx.protos.cosmos.auth import v1beta1 as auth_proto
 from dydx.protos.cosmos.base.query import v1beta1 as query_proto
@@ -11,6 +11,7 @@ from dydx.protos.google.protobuf import Any
 class Accounts(GrpcEndpoint):
   """Auth accounts endpoint."""
 
+  @wrap_exceptions
   async def accounts(self, *, pagination: query_proto.PageRequest | None = None) -> auth_proto.QueryAccountsResponse:
     """Query chain accounts."""
     request = auth_proto.QueryAccountsRequest(pagination=pagination)

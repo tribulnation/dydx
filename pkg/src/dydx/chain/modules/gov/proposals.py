@@ -2,12 +2,13 @@
 
 from typed_core import PaginatedResponse
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.chain.pagination import next_key, page_request
 from dydx.protos.cosmos.gov import v1 as gov_proto
 from dydx.protos.cosmos.base.query import v1beta1 as query_proto
 
 class Proposals(GrpcEndpoint):
+  @wrap_exceptions
   async def proposals(
     self, *, status: gov_proto.ProposalStatus | None = None,
     voter: str | None = None, depositor: str | None = None,

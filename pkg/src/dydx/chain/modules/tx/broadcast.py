@@ -1,11 +1,12 @@
 """Cosmos tx broadcast query."""
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.protos.cosmos.tx import v1beta1 as tx_proto
 
 class Broadcast(GrpcEndpoint):
   """Transaction broadcast endpoint."""
 
+  @wrap_exceptions
   async def broadcast(
     self,
     tx_bytes: bytes,

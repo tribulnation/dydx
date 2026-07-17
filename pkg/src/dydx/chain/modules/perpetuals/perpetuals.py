@@ -2,7 +2,7 @@
 
 from typed_core import PaginatedResponse
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.chain.pagination import next_key, page_request
 from dydx.protos.cosmos.base.query import v1beta1 as query_proto
 from dydx.protos.dydxprotocol import perpetuals as perpetuals_proto
@@ -10,6 +10,7 @@ from dydx.protos.dydxprotocol import perpetuals as perpetuals_proto
 class PerpetualsAll(GrpcEndpoint):
   """Perpetuals list endpoint."""
 
+  @wrap_exceptions
   async def perpetuals(self, *, pagination: query_proto.PageRequest | None = None) -> perpetuals_proto.QueryAllPerpetualsResponse:
     """Query all perpetuals."""
     request = perpetuals_proto.QueryAllPerpetualsRequest(pagination=pagination)

@@ -1,10 +1,42 @@
 """Shared dYdX Chain gRPC primitives."""
 
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
+from functools import wraps
 from types import TracebackType
 
 from grpclib.client import Channel
-from typing_extensions import Self
+from grpclib.const import Status
+from grpclib.exceptions import GRPCError, ProtocolError, StreamTerminatedError
+from typed_core.exceptions import NetworkError
+from typing_extensions import ParamSpec, Self, TypeVar
+
+# gRPC statuses that represent transport failures rather than API/business errors.
+_NETWORK_STATUSES = frozenset({Status.UNAVAILABLE})
+
+P = ParamSpec('P')
+T = TypeVar('T')
+
+def wrap_exceptions(fn: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
+  """Map grpclib transport failures from a gRPC call to typed_core NetworkError.
+
+  Transport-level failures (GOAWAY, HTTP/2 protocol errors, terminated streams, and
+  gRPC unavailable/502 responses) are raised as NetworkError. Business/API errors,
+  which arrive either in a successful response payload or as a non-transport GRPCError,
+  are left untouched.
+  """
+  @wraps(fn)
+  async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+    """Await the wrapped gRPC call, normalizing transport exceptions."""
+    try:
+      return await fn(*args, **kwargs)
+    except (ProtocolError, StreamTerminatedError, ConnectionError, TimeoutError) as exc:
+      raise NetworkError(str(exc)) from exc
+    except GRPCError as exc:
+      if exc.status in _NETWORK_STATUSES:
+        raise NetworkError(str(exc)) from exc
+      raise
+  return wrapper
 
 @dataclass(kw_only=True)
 class GrpcClient:

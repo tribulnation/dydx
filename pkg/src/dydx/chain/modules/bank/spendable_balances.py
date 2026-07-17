@@ -2,7 +2,7 @@
 
 from typed_core import PaginatedResponse
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.chain.pagination import next_key, page_request
 from dydx.protos.cosmos.bank import v1beta1 as bank_proto
 from dydx.protos.cosmos.base import v1beta1 as coin_proto
@@ -11,6 +11,7 @@ from dydx.protos.cosmos.base.query import v1beta1 as query_proto
 class SpendableBalances(GrpcEndpoint):
   """Bank spendable balances endpoint."""
 
+  @wrap_exceptions
   async def spendable_balances(
     self, address: str, *, pagination: query_proto.PageRequest | None = None,
   ) -> bank_proto.QuerySpendableBalancesResponse:

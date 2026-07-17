@@ -2,7 +2,7 @@
 
 from typed_core import PaginatedResponse
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.chain.pagination import next_key, page_request
 from dydx.protos.cosmos.base.query import v1beta1 as query_proto
 from dydx.protos.cosmos.staking import v1beta1 as staking_proto
@@ -10,6 +10,7 @@ from dydx.protos.cosmos.staking import v1beta1 as staking_proto
 class DelegatorUnbondingDelegations(GrpcEndpoint):
   """Delegator delegations endpoint."""
 
+  @wrap_exceptions
   async def delegator_unbonding_delegations(
     self, delegator_addr: str, *, pagination: query_proto.PageRequest | None = None,
   ) -> staking_proto.QueryDelegatorUnbondingDelegationsResponse:

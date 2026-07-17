@@ -2,7 +2,7 @@
 
 from typed_core import PaginatedResponse
 
-from dydx.chain.core import GrpcEndpoint
+from dydx.chain.core import GrpcEndpoint, wrap_exceptions
 from dydx.chain.pagination import next_key, page_request
 from dydx.protos.cosmos.base.query import v1beta1 as query_proto
 from dydx.protos.dydxprotocol import perpetuals as perpetuals_proto
@@ -10,6 +10,7 @@ from dydx.protos.dydxprotocol import perpetuals as perpetuals_proto
 class LiquidityTiers(GrpcEndpoint):
   """Liquidity tiers endpoint."""
 
+  @wrap_exceptions
   async def liquidity_tiers(
     self, *, pagination: query_proto.PageRequest | None = None,
   ) -> perpetuals_proto.QueryAllLiquidityTiersResponse:
