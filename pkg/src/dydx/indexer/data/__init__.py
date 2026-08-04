@@ -8,7 +8,9 @@ from .get_candles import GetCandlesPaged
 from .get_compliance_screen import GetComplianceScreen
 from .get_fills import GetFillsPaged
 from .get_funding_payments import GetFundingPaymentsPaged
-from .get_funding_payments_for_parent_subaccount import GetFundingPaymentsForParentSubaccount
+from .get_funding_payments_for_parent_subaccount import (
+  GetFundingPaymentsForParentSubaccountPaged,
+)
 from .get_height import GetHeight
 from .get_historical_funding import GetHistoricalFundingPaged
 from .get_historical_pnl import GetHistoricalPnl
@@ -45,7 +47,7 @@ class IndexerData(
   GetComplianceScreen,
   GetFillsPaged,
   GetFundingPaymentsPaged,
-  GetFundingPaymentsForParentSubaccount,
+  GetFundingPaymentsForParentSubaccountPaged,
   GetHeight,
   GetHistoricalFundingPaged,
   GetHistoricalPnl,
