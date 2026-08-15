@@ -1,24 +1,39 @@
 # Structured quickstart + how-to content for the /typed catalog page's inline
-# combobox view (ADR 0014). Mirrors docs/index.md and docs/how-to/*.md — kept
-# in sync by hand until those pages generate from this file instead, not yet
-# decided. Every snippet here is checked against pkg/src, not copied from
-# a prior rendering.
+# combobox view (ADR 0014, schema extended for markdown `body` + links ADR
+# 0015). Mirrors docs/index.md and docs/how-to/*.md — kept in sync by hand
+# until those pages generate from this file instead, not yet decided. Every
+# snippet here is checked against pkg/src, not copied from a prior rendering.
+#
+# `body` fields are markdown (inline subset — links, code spans, emphasis;
+# no block-level content), rendered at sync time by the landing repo's
+# `scripts/sync-docs.mjs`. Links are absolute native-route paths
+# (`/typed/dydx/...`), not relative doc-tree paths — this file is authored
+# for exactly one rendering location, unlike docs/*.md's portable relative
+# links (see ADR 0015).
 
-env_setup: |
-  # .env
-  DYDX_MNEMONIC="your wallet mnemonic"
+env_setup:
+  body: >-
+    Create a `.env` with your wallet mnemonic — see
+    [wallet setup](/typed/dydx/api-keys) for where to get one.
+  code: |
+    # .env
+    DYDX_MNEMONIC="your wallet mnemonic"
 
-install: pip install typed-dydx python-dotenv
+install:
+  body: Install the client and `python-dotenv` to load the `.env` file.
+  code: pip install typed-dydx python-dotenv
 
-first_call: |
-  from dotenv import load_dotenv
-  load_dotenv()
+first_call:
+  body: Load the environment, then make your first call.
+  code: |
+    from dotenv import load_dotenv
+    load_dotenv()
 
-  from dydx import Dydx
+    from dydx import Dydx
 
-  async with Dydx.mainnet() as client:
-    market = await client.indexer.data.get_market('BTC-USD')
-    print(market)
+    async with Dydx.mainnet() as client:
+      market = await client.indexer.data.get_market('BTC-USD')
+      print(market)
 
 how_tos:
   - title: Fetch market data
